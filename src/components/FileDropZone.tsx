@@ -58,6 +58,16 @@ export default function FileDropZone({
     event.target.value = ''
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) {
+      return
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleBrowse()
+    }
+  }
+
   return (
     <section
       className={`group relative flex min-h-[300px] flex-col items-center justify-center gap-4 rounded-3xl border border-dashed px-6 py-10 text-center transition-all duration-300 ${
@@ -65,9 +75,15 @@ export default function FileDropZone({
           ? 'border-ember-400 bg-ember-50/50 shadow-glow'
           : 'border-sand-300 bg-white/70 backdrop-blur-sm'
       } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
+      aria-busy={disabled}
+      aria-label="بارگذاری فایل اکسل"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
+      onKeyDown={handleKeyDown}
     >
       <div className="absolute inset-3 rounded-[22px] border border-sand-200/70" />
       <div className="relative flex flex-col items-center gap-3">

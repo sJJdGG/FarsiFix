@@ -12,14 +12,17 @@ type WorkerPhase = 'parsing' | 'normalizing' | 'compressing'
 interface ExcelWorker {
   processExcel: (
     buffer: ArrayBuffer,
+    jobId: string,
     onProgress?: (phase: WorkerPhase) => void
-  ) => Promise<Uint8Array>
+  ) => Promise<ArrayBuffer>
+  cancel: (jobId: string) => void
 }
 
 const ERROR_CODES = {
   invalidZip: 'FARSIFIX_INVALID_ZIP',
   sharedStringsTooLarge: 'FARSIFIX_SHARED_STRINGS_TOO_LARGE',
   sheetTooLarge: 'FARSIFIX_SHEET_TOO_LARGE',
+  aborted: 'FARSIFIX_ABORTED',
 }
 
 const STATUS_COPY: Record<Phase, string> = {
@@ -77,6 +80,9 @@ const mapErrorMessage = (error: unknown) => {
     if (message.includes(ERROR_CODES.sheetTooLarge)) {
       return 'یکی از شیت‌ها بسیار بزرگ است (بیش از ۵۰ مگابایت متن XML).'
     }
+    if (message.includes(ERROR_CODES.aborted)) {
+      return 'پردازش لغو شد.'
+    }
     if (message.includes(ERROR_CODES.invalidZip)) {
       return 'این فایل اکسل معتبر نیست یا آسیب دیده است.'
     }
@@ -87,6 +93,7 @@ const mapErrorMessage = (error: unknown) => {
 
 export default function App() {
   const workerRef = useRef<Comlink.Remote<ExcelWorker> | null>(null)
+  const jobIdRef = useRef<string | null>(null)
   const [phase, setPhase] = useState<Phase>('idle')
   const [error, setError] = useState<string | null>(null)
   const [activeFile, setActiveFile] = useState<File | null>(null)
@@ -126,13 +133,8 @@ export default function App() {
     []
   )
 
-  const handleDownload = (data: Uint8Array, originalName: string) => {
-    // Ensure we use a standalone ArrayBuffer for Blob creation.
-    const buffer = (data.buffer as ArrayBuffer).slice(
-      data.byteOffset,
-      data.byteOffset + data.byteLength
-    )
-    const blob = new Blob([buffer], {
+  const handleDownload = (data: ArrayBuffer, originalName: string) => {
+    const blob = new Blob([data], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     })
     const url = URL.createObjectURL(blob)
@@ -185,18 +187,23 @@ export default function App() {
     }
 
     try {
+      const jobId = crypto.randomUUID()
+      jobIdRef.current = jobId
       setPhase('parsing')
       const buffer = await file.arrayBuffer()
       // Transfer the ArrayBuffer to the worker (zero-copy).
       const output = await worker.processExcel(
         Comlink.transfer(buffer, [buffer]),
+        jobId,
         progressProxy
       )
       setPhase('done')
       handleDownload(output, file.name)
+      jobIdRef.current = null
     } catch (err) {
       setPhase('error')
       setError(mapErrorMessage(err))
+      jobIdRef.current = null
       console.error(err)
     }
   }
@@ -211,6 +218,14 @@ export default function App() {
     document.body.appendChild(link)
     link.click()
     link.remove()
+  }
+
+  const handleCancel = () => {
+    const worker = workerRef.current
+    const jobId = jobIdRef.current
+    if (worker && jobId) {
+      worker.cancel(jobId)
+    }
   }
 
   return (
@@ -241,7 +256,18 @@ export default function App() {
             />
             <div className="rounded-3xl border border-sand-200 bg-white/80 p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-sand-900">وضعیت فایل</h3>
-              <p className="mt-2 text-sm text-sand-600">{STATUS_COPY[phase]}</p>
+              <p className="mt-2 text-sm text-sand-600" aria-live="polite">
+                {STATUS_COPY[phase]}
+              </p>
+              {busy ? (
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-ember-200 bg-ember-50 px-5 py-2 text-sm font-semibold text-ember-700 transition hover:-translate-y-0.5 hover:bg-ember-100"
+                >
+                  لغو پردازش
+                </button>
+              ) : null}
               {downloadInfo ? (
                 <button
                   type="button"
