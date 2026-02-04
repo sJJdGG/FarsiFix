@@ -1,0 +1,46 @@
+# Repository Guidelines
+
+## Project Structure & Module Organization
+- `src/` contains all application code.
+- `src/App.tsx` wires the UI, worker, and download flow.
+- `src/components/` holds UI components (PascalCase files).
+- `src/lib/` contains pure logic (e.g., `persianNormalizer.ts`, `xmlTextNormalizer.ts`).
+- `src/workers/` contains worker code (`excel.worker.ts`) and testable core logic (`excelCore.ts`).
+- `e2e/` holds Playwright specs (`*.spec.ts`).
+- `public/` contains static assets (e.g., `favicon.svg`).
+- `scripts/` includes local tooling such as `view.mjs` (headed Playwright view).
+
+## Build, Test, and Development Commands
+- `npm run dev`: Start Vite dev server.
+- `npm run view`: Open headed Playwright session pointing at the dev server.
+- `npm run build`: Typecheck and build production assets.
+- `npm run typecheck`: Strict TypeScript check only.
+- `npm run test`: Run unit tests (Vitest) in `src/**/*.test.ts`.
+- `npm run e2e`: Run Playwright end-to-end tests.
+- `npm run lint`: Biome lint/format checks.
+- `npm run lint:ox`: Oxlint type-aware checks.
+- `npm run lint:all`: Run both Biome and Oxlint.
+
+## Coding Style & Naming Conventions
+- TypeScript strict mode; prefer explicit types at boundaries (worker APIs, helpers).
+- Indentation: 2 spaces; format with Biome (`biome.json`).
+- Components: PascalCase names and files (e.g., `FileDropZone.tsx`).
+- Functions/variables: camelCase.
+- Tests: unit tests `*.test.ts`, e2e tests `*.spec.ts`.
+- Avoid DOM parsing for Excel XML; use regex-based string surgery in `xmlTextNormalizer.ts`.
+
+## Testing Guidelines
+- Unit tests use Vitest; keep tests close to logic.
+- Worker logic is tested via `src/workers/excelCore.test.ts`.
+- E2E tests use Playwright, asserting download filename and contents (including XML entity preservation).
+- Add tests when modifying normalization rules or XML processing.
+
+## Commit & Pull Request Guidelines
+- Commit history is lightweight; recent commits use `feat:` prefixes but it is not enforced.
+- Use short, descriptive commit messages (e.g., `feat: add worker cancel support`).
+- PRs should include a brief summary, test commands run, and screenshots for UI changes.
+
+## Configuration & Security Notes
+- `.env` supports `VITE_MAX_FILE_SIZE_MB` for upload limits.
+- All processing is client-side; do not introduce server-side data transfer.
+- Keep XML entities encoded; never decode and re-encode XML text.
