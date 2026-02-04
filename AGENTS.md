@@ -44,3 +44,4 @@
 - `.env` supports `VITE_MAX_FILE_SIZE_MB` for upload limits.
 - All processing is client-side; do not introduce server-side data transfer.
 - Keep XML entities encoded; never decode and re-encode XML text.
+- See `XML_INVARIANTS.md` for the full XML rules and guardrails.
