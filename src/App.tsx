@@ -1,29 +1,17 @@
 import { Cpu, Download, ShieldCheck, Sparkles } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import * as Comlink from 'comlink'
+import { useEffect, useState } from 'react'
 import ErrorDisplay from './components/ErrorDisplay'
 import FileDropZone from './components/FileDropZone'
 import ProcessingStatus from './components/ProcessingStatus'
+import { useExcelWorker } from './hooks/useExcelWorker'
+import {
+  ERROR_CODES,
+  type WorkerErrorPayload,
+  isWorkerErrorPayload,
+} from './lib/workerContracts'
+import { validateExcelFile } from './lib/validateExcel'
 
 type Phase = 'idle' | 'parsing' | 'normalizing' | 'compressing' | 'done' | 'error'
-
-type WorkerPhase = 'parsing' | 'normalizing' | 'compressing'
-
-interface ExcelWorker {
-  processExcel: (
-    buffer: ArrayBuffer,
-    jobId: string,
-    onProgress?: (phase: WorkerPhase) => void
-  ) => Promise<ArrayBuffer>
-  cancel: (jobId: string) => void
-}
-
-const ERROR_CODES = {
-  invalidZip: 'FARSIFIX_INVALID_ZIP',
-  sharedStringsTooLarge: 'FARSIFIX_SHARED_STRINGS_TOO_LARGE',
-  sheetTooLarge: 'FARSIFIX_SHEET_TOO_LARGE',
-  aborted: 'FARSIFIX_ABORTED',
-}
 
 const STATUS_COPY: Record<Phase, string> = {
   idle: 'فایل اکسل خود را انتخاب کنید تا یکسان‌سازی شروع شود.',
@@ -71,33 +59,38 @@ const getDownloadName = (original: string) => {
   return `${original}_FarsiFix.xlsx`
 }
 
+const mapWorkerErrorMessage = (error: WorkerErrorPayload) => {
+  if (error.code === ERROR_CODES.sharedStringsTooLarge) {
+    return 'حجم محتوای متنی فایل بسیار زیاد است و امکان پردازش امن وجود ندارد.'
+  }
+  if (error.code === ERROR_CODES.sheetTooLarge) {
+    return 'یکی از شیت‌ها بسیار بزرگ است (بیش از ۵۰ مگابایت متن XML).'
+  }
+  if (error.code === ERROR_CODES.aborted) {
+    return 'پردازش لغو شد.'
+  }
+  if (error.code === ERROR_CODES.invalidZip) {
+    return 'این فایل اکسل معتبر نیست یا آسیب دیده است.'
+  }
+  return error.message
+}
+
 const mapErrorMessage = (error: unknown) => {
+  if (isWorkerErrorPayload(error)) {
+    return mapWorkerErrorMessage(error)
+  }
   if (error instanceof Error) {
-    const message = error.message
-    if (message.includes(ERROR_CODES.sharedStringsTooLarge)) {
-      return 'حجم محتوای متنی فایل بسیار زیاد است و امکان پردازش امن وجود ندارد.'
-    }
-    if (message.includes(ERROR_CODES.sheetTooLarge)) {
-      return 'یکی از شیت‌ها بسیار بزرگ است (بیش از ۵۰ مگابایت متن XML).'
-    }
-    if (message.includes(ERROR_CODES.aborted)) {
-      return 'پردازش لغو شد.'
-    }
-    if (message.includes(ERROR_CODES.invalidZip)) {
-      return 'این فایل اکسل معتبر نیست یا آسیب دیده است.'
-    }
-    return message
+    return error.message
   }
   return 'یک خطای ناشناخته رخ داد.'
 }
 
 export default function App() {
-  const workerRef = useRef<Comlink.Remote<ExcelWorker> | null>(null)
-  const jobIdRef = useRef<string | null>(null)
   const [phase, setPhase] = useState<Phase>('idle')
   const [error, setError] = useState<string | null>(null)
   const [activeFile, setActiveFile] = useState<File | null>(null)
   const [downloadInfo, setDownloadInfo] = useState<{ url: string; name: string } | null>(null)
+  const { processBuffer, cancel } = useExcelWorker()
 
   const maxFileSizeMbRaw = Number.parseFloat(import.meta.env.VITE_MAX_FILE_SIZE_MB ?? '100')
   const maxFileSizeMb = Number.isFinite(maxFileSizeMbRaw) ? maxFileSizeMbRaw : 100
@@ -106,32 +99,12 @@ export default function App() {
   const busy = ['parsing', 'normalizing', 'compressing'].includes(phase)
 
   useEffect(() => {
-    const worker = new Worker(new URL('./workers/excel.worker.ts', import.meta.url), {
-      type: 'module',
-    })
-    workerRef.current = Comlink.wrap<ExcelWorker>(worker)
-
-    return () => {
-      worker.terminate()
-    }
-  }, [])
-
-  useEffect(() => {
     return () => {
       if (downloadInfo) {
         URL.revokeObjectURL(downloadInfo.url)
       }
     }
   }, [downloadInfo])
-
-  // Comlink callback to keep UI phase in sync with worker progress.
-  const progressProxy = useMemo(
-    () =>
-      Comlink.proxy((nextPhase: WorkerPhase) => {
-        setPhase(nextPhase)
-      }),
-    []
-  )
 
   const handleDownload = (data: ArrayBuffer, originalName: string) => {
     const blob = new Blob([data], {
@@ -163,47 +136,32 @@ export default function App() {
     setActiveFile(file)
     setDownloadInfo(null)
 
-    // Loose MIME check + strict extension check (browsers are inconsistent).
-    const hasValidExtension = file.name.toLowerCase().endsWith('.xlsx')
-    const mimeOk = !file.type || /(sheet|excel|octet-stream)/i.test(file.type)
-
-    if (!hasValidExtension || !mimeOk) {
-      setPhase('error')
-      setError('لطفاً یک فایل اکسل با پسوند .xlsx انتخاب کنید.')
-      return
-    }
-
-    if (file.size > maxFileSizeBytes) {
-      setPhase('error')
-      setError(`حجم فایل بیش از ${maxFileSizeMb} مگابایت است.`)
-      return
-    }
-
-    const worker = workerRef.current
-    if (!worker) {
-      setPhase('error')
-      setError('پردازشگر آماده نیست. لطفاً چند لحظه دیگر تلاش کنید.')
-      return
-    }
-
     try {
-      const jobId = crypto.randomUUID()
-      jobIdRef.current = jobId
+      const validation = validateExcelFile(file, maxFileSizeBytes)
+      if (!validation.ok) {
+        setPhase('error')
+        if (validation.reason === 'invalidType') {
+          setError('لطفاً یک فایل اکسل با پسوند .xlsx انتخاب کنید.')
+        } else {
+          setError(`حجم فایل بیش از ${maxFileSizeMb} مگابایت است.`)
+        }
+        return
+      }
+
       setPhase('parsing')
       const buffer = await file.arrayBuffer()
-      // Transfer the ArrayBuffer to the worker (zero-copy).
-      const output = await worker.processExcel(
-        Comlink.transfer(buffer, [buffer]),
-        jobId,
-        progressProxy
-      )
+      // Worker handles the zero-copy transfer; progress updates come from it.
+      const result = await processBuffer(buffer, (nextPhase) => setPhase(nextPhase))
+      if (!result.ok) {
+        setPhase('error')
+        setError(mapWorkerErrorMessage(result.error))
+        return
+      }
       setPhase('done')
-      handleDownload(output, file.name)
-      jobIdRef.current = null
+      handleDownload(result.data, file.name)
     } catch (err) {
       setPhase('error')
       setError(mapErrorMessage(err))
-      jobIdRef.current = null
       console.error(err)
     }
   }
@@ -221,11 +179,7 @@ export default function App() {
   }
 
   const handleCancel = () => {
-    const worker = workerRef.current
-    const jobId = jobIdRef.current
-    if (worker && jobId) {
-      worker.cancel(jobId)
-    }
+    cancel()
   }
 
   return (

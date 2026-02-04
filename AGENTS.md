@@ -4,9 +4,11 @@
 - `src/` contains all application code.
 - `src/App.tsx` wires the UI, worker, and download flow.
 - `src/components/` holds UI components (PascalCase files).
+- `src/hooks/` contains reusable UI logic (e.g., `useExcelWorker.ts`).
 - `src/lib/` contains pure logic (e.g., `persianNormalizer.ts`, `xmlTextNormalizer.ts`).
 - `src/workers/` contains worker code (`excel.worker.ts`) and testable core logic (`excelCore.ts`).
 - `e2e/` holds Playwright specs (`*.spec.ts`).
+- `fixtures/` includes `farsifix-fixture.xlsx` for manual smoke tests and e2e coverage.
 - `public/` contains static assets (e.g., `favicon.svg`).
 - `scripts/` includes local tooling such as `view.mjs` (headed Playwright view).
 
@@ -33,7 +35,14 @@
 - Unit tests use Vitest; keep tests close to logic.
 - Worker logic is tested via `src/workers/excelCore.test.ts`.
 - E2E tests use Playwright, asserting download filename and contents (including XML entity preservation).
+- `fixtures/farsifix-fixture.xlsx` is used in e2e tests and for manual Excel validation.
 - Add tests when modifying normalization rules or XML processing.
+
+## Manual Smoke Checklist (Excel)
+- Upload `fixtures/farsifix-fixture.xlsx` and open the output in Excel.
+- Verify Persian normalization in sheet1 (e.g., Arabic yeh/kaf, ZWNJ, digits).
+- Verify inline strings in sheet2 are normalized and `&amp;`/`&lt;`/`&gt;` remain encoded.
+- Confirm formulas still exist (`SUM`, `CONCAT`, `IF`) and that formatting (bold headers, date) is intact.
 
 ## Commit & Pull Request Guidelines
 - Commit history is lightweight; recent commits use `feat:` prefixes but it is not enforced.
