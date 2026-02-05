@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200..900&display=swap");
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ═══════════════════════════════════════════════════════════════════════════
    FARSIFIX — Persian Calligraphic Modernism Design System
@@ -111,14 +112,10 @@
   --shadow-glow: 0 20px 60px -30px rgba(236, 174, 42, 0.5);
   --shadow-glow-turq: 0 20px 60px -30px rgba(36, 171, 172, 0.5);
   --shadow-glow-rose: 0 20px 60px -30px rgba(249, 58, 90, 0.4);
-  --shadow-card:
-    0 4px 24px -4px rgba(26, 31, 56, 0.08), 0 0 0 1px rgba(26, 31, 56, 0.05);
-  --shadow-card-hover:
-    0 8px 40px -8px rgba(26, 31, 56, 0.12), 0 0 0 1px rgba(26, 31, 56, 0.08);
-  --shadow-card-dark:
-    0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-card-dark-hover:
-    0 8px 40px -8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-card: 0 4px 24px -4px rgba(26, 31, 56, 0.08), 0 0 0 1px rgba(26, 31, 56, 0.05);
+  --shadow-card-hover: 0 8px 40px -8px rgba(26, 31, 56, 0.12), 0 0 0 1px rgba(26, 31, 56, 0.08);
+  --shadow-card-dark: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-card-dark-hover: 0 8px 40px -8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
 
   /* Easing functions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -141,7 +138,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* CSS custom props for use in gradients and JS */
   --ink-50: #f0f2f8;
@@ -200,6 +197,10 @@
   --stone-800: #5f5953;
   --stone-900: #514c47;
   --stone-950: #2a2724;
+}
+
+:root.dark {
+  color-scheme: dark;
 }
 
 * {

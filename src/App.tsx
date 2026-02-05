@@ -1,10 +1,10 @@
-import AppShell from './components/AppShell'
-import ContentGrid from './components/ContentGrid'
-import HeroHeader from './components/HeroHeader'
-import SidePane from './components/SidePane'
-import TopBar from './components/TopBar'
-import UploadPane from './components/UploadPane'
-import { useFarsiFix } from './hooks/useFarsiFix'
+import AppShell from "./components/AppShell";
+import ContentGrid from "./components/ContentGrid";
+import HeroHeader from "./components/HeroHeader";
+import SidePane from "./components/SidePane";
+import TopBar from "./components/TopBar";
+import UploadPane from "./components/UploadPane";
+import { useFarsiFix } from "./hooks/useFarsiFix";
 
 export default function App() {
   const {
@@ -18,7 +18,7 @@ export default function App() {
     handleFileSelected,
     handleCancel,
     handleDownloadAgain,
-  } = useFarsiFix()
+  } = useFarsiFix();
 
   return (
     <AppShell>
@@ -41,5 +41,5 @@ export default function App() {
         secondary={<SidePane phase={phase} maxFileSizeMb={maxFileSizeMb} />}
       />
     </AppShell>
-  )
+  );
 }

@@ -1,7 +1,27 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "css": { "parser": { "tailwindDirectives": true } },
+  "files": {
+    "includes": [
+      "src/**",
+      "e2e/**",
+      "scripts/**",
+      "tests/**",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.mjs",
+      "*.cjs",
+      "*.json",
+      "!!**/dist",
+      "!!**/node_modules",
+      "!!**/test-results",
+      "!!**/.playwright-cli",
+      "!!**/output",
+      "!!**/coverage",
+      "!!**/package-lock.json"
+    ]
   },
   "linter": {
     "enabled": true,

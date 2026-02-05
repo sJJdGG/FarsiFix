@@ -1,47 +1,26 @@
 import { Check, Circle, Loader2 } from "lucide-react";
-import { getPhaseBadgeLabel } from "../content/status";
+import { getPhaseBadgeLabel, PROCESSING_PHASES, PROCESSING_STEPS } from "../content/status";
 import type { Phase } from "../lib/uiTypes";
-
-const STEPS: Array<{ id: Exclude<Phase, "idle" | "error">; label: string }> = [
-  { id: "parsing", label: "باز کردن فایل اکسل" },
-  { id: "normalizing", label: "یکسان‌سازی متن فارسی" },
-  { id: "compressing", label: "بسته‌بندی خروجی" },
-  { id: "done", label: "آماده دانلود" },
-];
+import Card from "./Card";
 
 interface ProcessingStatusProps {
   phase: Phase;
 }
 
 export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
-  const order = [
-    "idle",
-    "parsing",
-    "normalizing",
-    "compressing",
-    "done",
-  ] as const;
   const activeIndex =
     phase === "idle" || phase === "error"
       ? -1
-      : order.indexOf(phase as (typeof order)[number]);
+      : PROCESSING_PHASES.indexOf(phase as (typeof PROCESSING_PHASES)[number]);
 
   const isDone = phase === "done";
   const isError = phase === "error";
 
   return (
-    <section
-      className="
-      relative overflow-hidden rounded-2xl border border-stone-200 bg-white/70 p-5
-      shadow-card backdrop-blur-sm transition-all duration-500
-      dark:border-ink-700 dark:bg-ink-900/50 dark:shadow-card-dark
-    "
-    >
+    <Card>
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-base font-bold text-ink-900 dark:text-stone-100">
-          مراحل پردازش
-        </h3>
+        <h3 className="text-base font-bold text-ink-900 dark:text-stone-100">مراحل پردازش</h3>
         <span
           className={`
             rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300
@@ -62,11 +41,10 @@ export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
 
       {/* Steps timeline */}
       <div className="mt-5 space-y-0">
-        {STEPS.map((step, index) => {
-          const isComplete =
-            phase === "done" || (activeIndex !== -1 && activeIndex > index);
+        {PROCESSING_STEPS.map((step, index) => {
+          const isComplete = phase === "done" || (activeIndex !== -1 && activeIndex > index);
           const isActive = activeIndex === index;
-          const isLast = index === STEPS.length - 1;
+          const isLast = index === PROCESSING_STEPS.length - 1;
 
           return (
             <div key={step.id} className="relative flex items-start gap-4">
@@ -113,7 +91,7 @@ export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
                         ? "text-turq-700 dark:text-turq-400"
                         : isActive
                           ? "text-ink-900 dark:text-stone-100"
-                          : "text-stone-500 dark:text-stone-500"
+                          : "text-stone-500 dark:text-stone-400"
                     }
                   `}
                 >
@@ -129,6 +107,6 @@ export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }

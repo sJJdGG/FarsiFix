@@ -1,18 +1,18 @@
-import ErrorDisplay from './ErrorDisplay'
-import FileDropZone from './FileDropZone'
-import StatusCard from './StatusCard'
-import type { Phase } from '../lib/uiTypes'
+import type { Phase } from "../lib/uiTypes";
+import ErrorDisplay from "./ErrorDisplay";
+import FileDropZone from "./FileDropZone";
+import StatusCard from "./StatusCard";
 
 interface UploadPaneProps {
-  phase: Phase
-  busy: boolean
-  activeFileName?: string
-  activeFileSize?: string
-  hasDownload: boolean
-  error?: string | null
-  onFileSelected: (file: File) => void
-  onCancel: () => void
-  onDownloadAgain: () => void
+  phase: Phase;
+  busy: boolean;
+  activeFileName?: string;
+  activeFileSize?: string;
+  hasDownload: boolean;
+  error?: string | null;
+  onFileSelected: (file: File) => void;
+  onCancel: () => void;
+  onDownloadAgain: () => void;
 }
 
 export default function UploadPane({
@@ -43,5 +43,5 @@ export default function UploadPane({
       />
       {error ? <ErrorDisplay message={error} /> : null}
     </>
-  )
+  );
 }

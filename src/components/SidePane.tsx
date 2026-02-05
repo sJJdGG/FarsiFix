@@ -1,10 +1,10 @@
-import FeaturesCard from './FeaturesCard'
-import ProcessingStatus from './ProcessingStatus'
-import type { Phase } from '../lib/uiTypes'
+import type { Phase } from "../lib/uiTypes";
+import FeaturesCard from "./FeaturesCard";
+import ProcessingStatus from "./ProcessingStatus";
 
 interface SidePaneProps {
-  phase: Phase
-  maxFileSizeMb: number
+  phase: Phase;
+  maxFileSizeMb: number;
 }
 
 export default function SidePane({ phase, maxFileSizeMb }: SidePaneProps) {
@@ -13,5 +13,5 @@ export default function SidePane({ phase, maxFileSizeMb }: SidePaneProps) {
       <ProcessingStatus phase={phase} />
       <FeaturesCard maxFileSizeMb={maxFileSizeMb} />
     </>
-  )
+  );
 }

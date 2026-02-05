@@ -23,6 +23,13 @@
 - `npm run lint`: Biome lint/format checks.
 - `npm run lint:ox`: Oxlint type-aware checks.
 - `npm run lint:all`: Run both Biome and Oxlint.
+- `npm run check:theme`: Validate built CSS uses class-based dark mode (no prefers-color-scheme).
+
+## Routine End-of-Task Checks (Mandatory)
+- `npm run lint:all`
+- `npm run build`
+- `npm run test`
+- `npm run check:theme`
 
 ## Coding Style & Naming Conventions
 - TypeScript strict mode; prefer explicit types at boundaries (worker APIs, helpers).

@@ -31,10 +31,8 @@ export default function HeroHeader() {
       <p className="animate-fade-in-up delay-200 max-w-2xl text-lg leading-relaxed text-stone-600 sm:text-xl dark:text-stone-400">
         بهینه‌سازی فایل‌های اکسل برای جستجوی دقیق‌تر.
         <br className="hidden sm:block" />
-        <span className="text-ink-700 dark:text-stone-300">
-          متن‌های فارسی را یکسان کنید
-        </span>
-        ، بدون دستکاری فرمول‌ها و قالب‌بندی‌ها.
+        <span className="text-ink-700 dark:text-stone-300">متن‌های فارسی را یکسان کنید</span>، بدون
+        دستکاری فرمول‌ها و قالب‌بندی‌ها.
       </p>
 
       {/* Decorative divider */}

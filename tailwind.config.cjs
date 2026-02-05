@@ -1,5 +1,4 @@
 /* eslint-disable */
-const rtl = require("tailwindcss-rtl");
 
 module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
@@ -122,18 +121,14 @@ module.exports = {
         "glow-rose": "0 20px 60px -30px rgba(249, 58, 90, 0.4)",
         "inner-glow": "inset 0 1px 0 0 rgba(255, 255, 255, 0.1)",
         card: "0 4px 24px -4px rgba(26, 31, 56, 0.08), 0 0 0 1px rgba(26, 31, 56, 0.05)",
-        "card-hover":
-          "0 8px 40px -8px rgba(26, 31, 56, 0.12), 0 0 0 1px rgba(26, 31, 56, 0.08)",
-        "card-dark":
-          "0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05)",
+        "card-hover": "0 8px 40px -8px rgba(26, 31, 56, 0.12), 0 0 0 1px rgba(26, 31, 56, 0.08)",
+        "card-dark": "0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05)",
         "card-dark-hover":
           "0 8px 40px -8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08)",
       },
       backgroundImage: {
-        "hero-gradient":
-          "linear-gradient(135deg, #f0f2f8 0%, #fafaf9 50%, #fefcf3 100%)",
-        "hero-gradient-dark":
-          "linear-gradient(135deg, #0f1221 0%, #1a1f38 50%, #2c3356 100%)",
+        "hero-gradient": "linear-gradient(135deg, #f0f2f8 0%, #fafaf9 50%, #fefcf3 100%)",
+        "hero-gradient-dark": "linear-gradient(135deg, #0f1221 0%, #1a1f38 50%, #2c3356 100%)",
         "glow-radial":
           "radial-gradient(circle at 50% 0%, rgba(236, 174, 42, 0.15), transparent 60%)",
         "glow-radial-turq":
@@ -154,14 +149,12 @@ module.exports = {
       animation: {
         "fade-in-up": "fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
         "fade-in-scale": "fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
-        "slide-in-right":
-          "slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "slide-in-right": "slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
         float: "float 3s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         shimmer: "shimmer 2s linear infinite",
         "rotate-slow": "rotate-slow 20s linear infinite",
-        "check-draw":
-          "check-draw 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards",
+        "check-draw": "check-draw 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards",
       },
       keyframes: {
         fadeInUp: {
@@ -204,5 +197,4 @@ module.exports = {
       },
     },
   },
-  plugins: [rtl],
 };

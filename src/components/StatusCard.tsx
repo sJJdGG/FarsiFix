@@ -1,6 +1,7 @@
 import { ArrowDownToLine, X } from "lucide-react";
 import { getPhaseLabel } from "../content/status";
 import type { Phase } from "../lib/uiTypes";
+import Card from "./Card";
 
 interface StatusCardProps {
   phase: Phase;
@@ -20,21 +21,10 @@ export default function StatusCard({
   const isProcessing = busy && phase !== "idle";
   const isDone = phase === "done";
   const isError = phase === "error";
+  const variant = isDone ? "success" : isError ? "error" : "default";
 
   return (
-    <section
-      className={`
-      relative overflow-hidden rounded-2xl border p-5 transition-all duration-500
-      ${
-        isDone
-          ? "border-turq-200 bg-turq-50/80 dark:border-turq-800 dark:bg-turq-900/30"
-          : isError
-            ? "border-rose-200 bg-rose-50/80 dark:border-rose-800 dark:bg-rose-900/30"
-            : "border-stone-200 bg-white/70 dark:border-ink-700 dark:bg-ink-900/50"
-      }
-      backdrop-blur-sm shadow-card dark:shadow-card-dark
-    `}
-    >
+    <Card variant={variant}>
       {/* Progress stripe for processing state */}
       {isProcessing && (
         <div className="absolute inset-x-0 top-0 h-1 bg-gold-200 dark:bg-gold-800">
@@ -102,10 +92,8 @@ export default function StatusCard({
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <polyline
-                points="20 6 9 17 4 12"
-                className="animate-check-draw"
-              />
+              <title>موفق</title>
+              <polyline points="20 6 9 17 4 12" className="animate-check-draw" />
             </svg>
           ) : isError ? (
             <X className="h-5 w-5" />
@@ -155,6 +143,6 @@ export default function StatusCard({
           )}
         </div>
       )}
-    </section>
+    </Card>
   );
 }

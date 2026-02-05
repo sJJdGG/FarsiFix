@@ -15,9 +15,7 @@ export default function TopBar() {
         >
           <span className="text-lg font-black">ف</span>
         </div>
-        <span className="text-sm font-bold text-ink-800 dark:text-stone-200">
-          فارسی‌فیکس
-        </span>
+        <span className="text-sm font-bold text-ink-900 dark:text-stone-200">فارسی‌فیکس</span>
       </div>
 
       {/* Right side actions */}

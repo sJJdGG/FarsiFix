@@ -1,5 +1,6 @@
 import { AlertCircle } from "lucide-react";
 import { FEATURES } from "../content/features";
+import Card from "./Card";
 
 interface FeaturesCardProps {
   maxFileSizeMb: number;
@@ -7,13 +8,7 @@ interface FeaturesCardProps {
 
 export default function FeaturesCard({ maxFileSizeMb }: FeaturesCardProps) {
   return (
-    <section
-      className="
-      relative overflow-hidden rounded-2xl border border-stone-200 bg-white/70 p-5
-      shadow-card backdrop-blur-sm transition-all duration-500
-      dark:border-ink-700 dark:bg-ink-900/50 dark:shadow-card-dark
-    "
-    >
+    <Card>
       {/* Decorative gradient corner */}
       <div className="absolute -top-20 -left-20 h-40 w-40 rounded-full bg-gold-400/10 blur-3xl dark:bg-gold-500/5" />
 
@@ -72,10 +67,9 @@ export default function FeaturesCard({ maxFileSizeMb }: FeaturesCardProps) {
       >
         <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 dark:text-rose-400" />
         <p className="text-xs text-rose-700 dark:text-rose-300">
-          حداکثر حجم مجاز:{" "}
-          <span className="font-bold">{maxFileSizeMb} مگابایت</span>
+          حداکثر حجم مجاز: <span className="font-bold">{maxFileSizeMb} مگابایت</span>
         </p>
       </div>
-    </section>
+    </Card>
   );
 }

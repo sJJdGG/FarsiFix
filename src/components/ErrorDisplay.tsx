@@ -1,23 +1,14 @@
 import { AlertTriangle, X } from "lucide-react";
+import Card from "./Card";
 
 interface ErrorDisplayProps {
   message: string;
   onDismiss?: () => void;
 }
 
-export default function ErrorDisplay({
-  message,
-  onDismiss,
-}: ErrorDisplayProps) {
+export default function ErrorDisplay({ message, onDismiss }: ErrorDisplayProps) {
   return (
-    <section
-      className="
-      relative overflow-hidden rounded-2xl border border-rose-200 
-      bg-rose-50/90 p-5 shadow-lg shadow-rose-500/10
-      backdrop-blur-sm transition-all duration-300
-      dark:border-rose-800 dark:bg-rose-900/40 dark:shadow-rose-900/20
-    "
-    >
+    <Card variant="error" className="transition-all duration-300">
       {/* Decorative gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 via-transparent to-transparent" />
 
@@ -34,9 +25,7 @@ export default function ErrorDisplay({
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-bold text-rose-800 dark:text-rose-200">
-            مشکلی پیش آمد
-          </h4>
+          <h4 className="text-sm font-bold text-rose-800 dark:text-rose-200">مشکلی پیش آمد</h4>
           <p className="mt-1.5 text-sm leading-relaxed text-rose-700 dark:text-rose-300">
             {message}
           </p>
@@ -60,6 +49,6 @@ export default function ErrorDisplay({
           </button>
         )}
       </div>
-    </section>
+    </Card>
   );
 }
