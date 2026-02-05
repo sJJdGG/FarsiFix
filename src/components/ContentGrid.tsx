@@ -1,15 +1,17 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
 interface ContentGridProps {
-  primary: ReactNode
-  secondary: ReactNode
+  primary: ReactNode;
+  secondary: ReactNode;
 }
 
 export default function ContentGrid({ primary, secondary }: ContentGridProps) {
   return (
-    <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-      <div className="flex flex-col gap-6">{primary}</div>
-      <div className="flex flex-col gap-6">{secondary}</div>
+    <section className="grid gap-10 lg:grid-cols-[1.3fr_0.7fr] lg:gap-12">
+      <div className="flex flex-col gap-8 animate-fade-in-up">{primary}</div>
+      <div className="flex flex-col gap-6 animate-fade-in-up delay-200">
+        {secondary}
+      </div>
     </section>
-  )
+  );
 }

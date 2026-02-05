@@ -1,21 +1,65 @@
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, X } from "lucide-react";
 
 interface ErrorDisplayProps {
-  message: string
+  message: string;
+  onDismiss?: () => void;
 }
 
-export default function ErrorDisplay({ message }: ErrorDisplayProps) {
+export default function ErrorDisplay({
+  message,
+  onDismiss,
+}: ErrorDisplayProps) {
   return (
-    <section className="rounded-3xl border border-ember-200 bg-ember-50/80 p-5 text-ember-900 shadow-sm">
-      <div className="flex items-start gap-3">
-        <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-xl bg-ember-100 text-ember-600">
+    <section
+      className="
+      relative overflow-hidden rounded-2xl border border-rose-200 
+      bg-rose-50/90 p-5 shadow-lg shadow-rose-500/10
+      backdrop-blur-sm transition-all duration-300
+      dark:border-rose-800 dark:bg-rose-900/40 dark:shadow-rose-900/20
+    "
+    >
+      {/* Decorative gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 via-transparent to-transparent" />
+
+      <div className="relative flex items-start gap-4">
+        {/* Icon */}
+        <span
+          className="
+          flex h-10 w-10 shrink-0 items-center justify-center rounded-xl 
+          bg-rose-500 text-white shadow-md shadow-rose-500/30
+        "
+        >
           <AlertTriangle className="h-5 w-5" />
         </span>
-        <div>
-          <h4 className="text-sm font-semibold">مشکلی پیش آمد</h4>
-          <p className="mt-1 text-sm leading-relaxed">{message}</p>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-bold text-rose-800 dark:text-rose-200">
+            مشکلی پیش آمد
+          </h4>
+          <p className="mt-1.5 text-sm leading-relaxed text-rose-700 dark:text-rose-300">
+            {message}
+          </p>
         </div>
+
+        {/* Dismiss button */}
+        {onDismiss && (
+          <button
+            type="button"
+            onClick={onDismiss}
+            className="
+              flex h-8 w-8 shrink-0 items-center justify-center rounded-lg
+              text-rose-500 transition-all duration-200
+              hover:bg-rose-100 hover:text-rose-700
+              focus-ring
+              dark:text-rose-400 dark:hover:bg-rose-800/50 dark:hover:text-rose-200
+            "
+            aria-label="بستن"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
     </section>
-  )
+  );
 }

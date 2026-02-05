@@ -1,17 +1,561 @@
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200..900&display=swap");
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ═══════════════════════════════════════════════════════════════════════════
+   FARSIFIX — Persian Calligraphic Modernism Design System
+   Tailwind v4 Theme Configuration
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* Primary: Deep Indigo */
+  --color-ink-50: #f0f2f8;
+  --color-ink-100: #dde2ef;
+  --color-ink-200: #bcc5df;
+  --color-ink-300: #94a1ca;
+  --color-ink-400: #6b78af;
+  --color-ink-500: #4f5c98;
+  --color-ink-600: #3d4880;
+  --color-ink-700: #333c68;
+  --color-ink-800: #2c3356;
+  --color-ink-900: #1a1f38;
+  --color-ink-950: #0f1221;
+
+  /* Accent: Warm Gold */
+  --color-gold-50: #fefcf3;
+  --color-gold-100: #fdf6de;
+  --color-gold-200: #fbecbd;
+  --color-gold-300: #f7dc8c;
+  --color-gold-400: #f2c654;
+  --color-gold-500: #ecae2a;
+  --color-gold-600: #d68f1b;
+  --color-gold-700: #b26d18;
+  --color-gold-800: #91551b;
+  --color-gold-900: #774619;
+
+  /* Success: Persian Turquoise */
+  --color-turq-50: #effcfb;
+  --color-turq-100: #d5f6f5;
+  --color-turq-200: #b0eeec;
+  --color-turq-300: #78e1df;
+  --color-turq-400: #40c9c9;
+  --color-turq-500: #24abac;
+  --color-turq-600: #1f8a8e;
+  --color-turq-700: #1f6f73;
+  --color-turq-800: #205a5e;
+  --color-turq-900: #1f4a4e;
+
+  /* Error: Rose */
+  --color-rose-50: #fff1f3;
+  --color-rose-100: #ffe0e4;
+  --color-rose-200: #ffc6cf;
+  --color-rose-300: #ff9dac;
+  --color-rose-400: #ff6480;
+  --color-rose-500: #f93a5a;
+  --color-rose-600: #e61743;
+  --color-rose-700: #c20f37;
+  --color-rose-800: #a11034;
+  --color-rose-900: #891332;
+
+  /* Neutral: Warm Stone */
+  --color-stone-50: #fafaf9;
+  --color-stone-100: #f5f4f2;
+  --color-stone-200: #e8e6e3;
+  --color-stone-300: #d6d2cd;
+  --color-stone-400: #b9b3ab;
+  --color-stone-500: #9f978d;
+  --color-stone-600: #8a8177;
+  --color-stone-700: #726a62;
+  --color-stone-800: #5f5953;
+  --color-stone-900: #514c47;
+  --color-stone-950: #2a2724;
+
+  /* Legacy aliases for compatibility (sand = stone, jade = turq, ember = rose) */
+  --color-sand-50: #fafaf9;
+  --color-sand-100: #f5f4f2;
+  --color-sand-200: #e8e6e3;
+  --color-sand-300: #d6d2cd;
+  --color-sand-400: #b9b3ab;
+  --color-sand-500: #9f978d;
+  --color-sand-600: #8a8177;
+  --color-sand-700: #726a62;
+  --color-sand-800: #5f5953;
+  --color-sand-900: #514c47;
+
+  --color-jade-50: #effcfb;
+  --color-jade-100: #d5f6f5;
+  --color-jade-200: #b0eeec;
+  --color-jade-300: #78e1df;
+  --color-jade-400: #40c9c9;
+  --color-jade-500: #24abac;
+  --color-jade-600: #1f8a8e;
+  --color-jade-700: #1f6f73;
+  --color-jade-800: #205a5e;
+  --color-jade-900: #1f4a4e;
+
+  --color-ember-50: #fff1f3;
+  --color-ember-100: #ffe0e4;
+  --color-ember-200: #ffc6cf;
+  --color-ember-300: #ff9dac;
+  --color-ember-400: #ff6480;
+  --color-ember-500: #f93a5a;
+  --color-ember-600: #e61743;
+  --color-ember-700: #c20f37;
+  --color-ember-800: #a11034;
+  --color-ember-900: #891332;
+
+  /* Fonts */
+  --font-sans: "Vazirmatn", system-ui, sans-serif;
+  --font-display: "Vazirmatn", system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-glow: 0 20px 60px -30px rgba(236, 174, 42, 0.5);
+  --shadow-glow-turq: 0 20px 60px -30px rgba(36, 171, 172, 0.5);
+  --shadow-glow-rose: 0 20px 60px -30px rgba(249, 58, 90, 0.4);
+  --shadow-card:
+    0 4px 24px -4px rgba(26, 31, 56, 0.08), 0 0 0 1px rgba(26, 31, 56, 0.05);
+  --shadow-card-hover:
+    0 8px 40px -8px rgba(26, 31, 56, 0.12), 0 0 0 1px rgba(26, 31, 56, 0.08);
+  --shadow-card-dark:
+    0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-card-dark-hover:
+    0 8px 40px -8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  /* Easing functions */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* Animation durations */
+  --animate-fade-in-up: fadeInUp 0.6s var(--ease-out-expo) both;
+  --animate-fade-in-scale: fadeInScale 0.6s var(--ease-out-expo) both;
+  --animate-slide-in-right: slideInRight 0.6s var(--ease-out-expo) both;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-rotate-slow: rotate-slow 20s linear infinite;
+  --animate-check-draw: check-draw 0.4s var(--ease-out-expo) 0.2s forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CSS VARIABLES FOR JS ACCESS
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
   color-scheme: light dark;
+
+  /* CSS custom props for use in gradients and JS */
+  --ink-50: #f0f2f8;
+  --ink-100: #dde2ef;
+  --ink-200: #bcc5df;
+  --ink-300: #94a1ca;
+  --ink-400: #6b78af;
+  --ink-500: #4f5c98;
+  --ink-600: #3d4880;
+  --ink-700: #333c68;
+  --ink-800: #2c3356;
+  --ink-900: #1a1f38;
+  --ink-950: #0f1221;
+
+  --gold-50: #fefcf3;
+  --gold-100: #fdf6de;
+  --gold-200: #fbecbd;
+  --gold-300: #f7dc8c;
+  --gold-400: #f2c654;
+  --gold-500: #ecae2a;
+  --gold-600: #d68f1b;
+  --gold-700: #b26d18;
+  --gold-800: #91551b;
+  --gold-900: #774619;
+
+  --turq-50: #effcfb;
+  --turq-100: #d5f6f5;
+  --turq-200: #b0eeec;
+  --turq-300: #78e1df;
+  --turq-400: #40c9c9;
+  --turq-500: #24abac;
+  --turq-600: #1f8a8e;
+  --turq-700: #1f6f73;
+  --turq-800: #205a5e;
+  --turq-900: #1f4a4e;
+
+  --rose-50: #fff1f3;
+  --rose-100: #ffe0e4;
+  --rose-200: #ffc6cf;
+  --rose-300: #ff9dac;
+  --rose-400: #ff6480;
+  --rose-500: #f93a5a;
+  --rose-600: #e61743;
+  --rose-700: #c20f37;
+  --rose-800: #a11034;
+  --rose-900: #891332;
+
+  --stone-50: #fafaf9;
+  --stone-100: #f5f4f2;
+  --stone-200: #e8e6e3;
+  --stone-300: #d6d2cd;
+  --stone-400: #b9b3ab;
+  --stone-500: #9f978d;
+  --stone-600: #8a8177;
+  --stone-700: #726a62;
+  --stone-800: #5f5953;
+  --stone-900: #514c47;
+  --stone-950: #2a2724;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Vazirmatn', system-ui, sans-serif;
+  font-family: "Vazirmatn", system-ui, sans-serif;
+  font-feature-settings: "ss01", "ss02";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--gold-200);
+  color: var(--ink-900);
+}
+
+.dark ::selection {
+  background-color: var(--gold-600);
+  color: var(--ink-950);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--stone-100);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stone-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--stone-400);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--ink-900);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--ink-600);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATION KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px -5px var(--gold-400);
+  }
+  50% {
+    box-shadow: 0 0 40px -5px var(--gold-400);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, 5%);
+  }
+  30% {
+    transform: translate(7%, -25%);
+  }
+  40% {
+    transform: translate(-5%, 25%);
+  }
+  50% {
+    transform: translate(-15%, 10%);
+  }
+  60% {
+    transform: translate(15%, 0%);
+  }
+  70% {
+    transform: translate(0%, 15%);
+  }
+  80% {
+    transform: translate(3%, 35%);
+  }
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+@keyframes progress-stripe {
+  0% {
+    background-position: 1rem 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes check-draw {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+.animate-check-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: check-draw 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+/* Stagger delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-400 {
+  animation-delay: 400ms;
+}
+.delay-500 {
+  animation-delay: 500ms;
+}
+.delay-600 {
+  animation-delay: 600ms;
+}
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+/* Grain overlay */
+.grain-overlay::before {
+  content: "";
+  position: absolute;
+  inset: -100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  animation: grain 8s steps(10) infinite;
+}
+
+.dark .grain-overlay::before {
+  opacity: 0.05;
+}
+
+/* Geometric pattern */
+.geo-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%23d6d2cd' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+}
+
+.dark .geo-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%232c3356' stroke-width='0.5'/%3E%3C/svg%3E");
+}
+
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dark .glass {
+  background: rgba(26, 31, 56, 0.7);
+}
+
+/* Progress stripe animation */
+.progress-stripe {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+  animation: progress-stripe 1s linear infinite;
+}
+
+/* Focus ring */
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+/* Text gradient */
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-500) 0%, var(--gold-600) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-turq {
+  background: linear-gradient(135deg, var(--turq-400) 0%, var(--turq-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Custom background gradients */
+.bg-hero-gradient {
+  background: linear-gradient(135deg, #f0f2f8 0%, #fafaf9 50%, #fefcf3 100%);
+}
+
+.dark .bg-hero-gradient,
+.bg-hero-gradient-dark {
+  background: linear-gradient(135deg, #0f1221 0%, #1a1f38 50%, #2c3356 100%);
+}
+
+.bg-mesh-gradient {
+  background:
+    radial-gradient(at 27% 37%, rgba(236, 174, 42, 0.15) 0px, transparent 50%),
+    radial-gradient(at 97% 21%, rgba(36, 171, 172, 0.12) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, rgba(79, 92, 152, 0.12) 0px, transparent 50%),
+    radial-gradient(at 10% 29%, rgba(249, 58, 90, 0.08) 0px, transparent 50%);
+}
+
+.dark .bg-mesh-gradient,
+.bg-mesh-gradient-dark {
+  background:
+    radial-gradient(at 27% 37%, rgba(236, 174, 42, 0.1) 0px, transparent 50%),
+    radial-gradient(at 97% 21%, rgba(36, 171, 172, 0.08) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, rgba(79, 92, 152, 0.15) 0px, transparent 50%),
+    radial-gradient(at 10% 29%, rgba(249, 58, 90, 0.05) 0px, transparent 50%);
+}
+
+/* Transition utilities */
+.ease-out-expo {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
