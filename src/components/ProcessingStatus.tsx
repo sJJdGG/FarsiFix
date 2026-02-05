@@ -1,6 +1,6 @@
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react'
-
-type Phase = 'idle' | 'parsing' | 'normalizing' | 'compressing' | 'done' | 'error'
+import { getPhaseBadgeLabel } from '../content/status'
+import type { Phase } from '../lib/uiTypes'
 
 const STEPS: Array<{ id: Exclude<Phase, 'idle' | 'error'>; label: string }> = [
   { id: 'parsing', label: 'باز کردن فایل اکسل' },
@@ -8,15 +8,6 @@ const STEPS: Array<{ id: Exclude<Phase, 'idle' | 'error'>; label: string }> = [
   { id: 'compressing', label: 'بسته‌بندی خروجی' },
   { id: 'done', label: 'آماده دانلود' },
 ]
-
-const PHASE_LABELS: Record<Phase, string> = {
-  idle: 'منتظر فایل شما',
-  parsing: 'در حال خواندن فایل…',
-  normalizing: 'در حال یکسان‌سازی متن…',
-  compressing: 'در حال فشرده‌سازی خروجی…',
-  done: 'پردازش کامل شد',
-  error: 'خطا در پردازش',
-}
 
 interface ProcessingStatusProps {
   phase: Phase
@@ -40,7 +31,7 @@ export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
                 : 'bg-sand-100 text-sand-700'
           }`}
         >
-          {PHASE_LABELS[phase]}
+          {getPhaseBadgeLabel(phase)}
         </span>
       </div>
       <div className="mt-5 space-y-3">

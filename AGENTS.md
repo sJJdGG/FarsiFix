@@ -4,7 +4,8 @@
 - `src/` contains all application code.
 - `src/App.tsx` wires the UI, worker, and download flow.
 - `src/components/` holds UI components (PascalCase files).
-- `src/hooks/` contains reusable UI logic (e.g., `useExcelWorker.ts`).
+- `src/content/` stores UI copy/data (`status.ts`, `features.ts`).
+- `src/hooks/` contains reusable UI logic (e.g., `useExcelWorker.ts`, `useFarsiFix.ts`, `useTheme.ts`).
 - `src/lib/` contains pure logic (e.g., `persianNormalizer.ts`, `xmlTextNormalizer.ts`).
 - `src/workers/` contains worker code (`excel.worker.ts`) and testable core logic (`excelCore.ts`).
 - `e2e/` holds Playwright specs (`*.spec.ts`).
