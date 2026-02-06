@@ -62,3 +62,8 @@
 - All processing is client-side; do not introduce server-side data transfer.
 - Keep XML entities encoded; never decode and re-encode XML text.
 - See `XML_INVARIANTS.md` for the full XML rules and guardrails.
+
+## Operator Notes (Learned)
+- Tailwind v4 dark variant defaults to `@media (prefers-color-scheme: dark)`; if class-based theming is required, define `@custom-variant dark` in `src/index.css` to avoid mixed system/manual behavior.
+- When visual verification is requested, run `npm run dev` inside `tmux` and use the Playwright skill to capture `output/playwright/*` screenshots for light/dark checks.
+- When asked to validate setup against docs, browse the official Tailwind/Vite installation docs before changing configuration.
