@@ -15,13 +15,15 @@ export default function TopBar() {
         >
           <span className="text-lg font-black">ف</span>
         </div>
-        <span className="text-sm font-bold text-ink-900 dark:text-stone-200">فارسی‌فیکس</span>
+        <span className="text-sm font-bold text-ink-900 dark:text-stone-200">
+          فارسی‌فیکس
+        </span>
       </div>
 
       {/* Right side actions */}
       <div className="flex items-center gap-3">
         <a
-          href="https://github.com/mmkholerdi/farsifix"
+          href="https://github.com/sJJdGG/farsifix"
           target="_blank"
           rel="noopener noreferrer"
           className="
