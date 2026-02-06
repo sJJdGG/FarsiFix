@@ -75,6 +75,7 @@ const stripNonSearchMarks = (input: string) => {
   const stripped: string[] = [];
 
   for (const ch of input) {
+    // ZWNJ is category Cf; keep it so zwnjMode can decide preserve vs space.
     if (ch === ZWNJ) {
       stripped.push(ch);
       continue;
