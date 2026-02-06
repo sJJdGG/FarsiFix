@@ -25,10 +25,21 @@
 - `npm run lint:all`: Run both Biome and Oxlint.
 - `npm run check:theme`: Validate built CSS uses class-based dark mode (no prefers-color-scheme).
 
-## Routine End-of-Task Checks (Mandatory)
+## Verification Policy (Mandatory)
+Use a two-stage verification flow to catch drift early and prevent regressions.
+
+### 1) In-Task Checkpoints (Mandatory)
+Run targeted checks immediately after meaningful changes (do not wait until the end):
+- Run `npm run test` after logic/rule changes (normalizer, XML processing, worker logic).
+- Run the relevant Playwright spec(s) after UI/download-flow/Excel-output changes.
+- If a checkpoint fails, fix first, then continue.
+
+### 2) Pre-Handoff Gate (Mandatory)
+Run these before handoff or commit for any change that can affect behavior, tests, worker logic, Excel/XML processing, or UI flows:
 - `npm run lint:all`
 - `npm run build`
 - `npm run test`
+- `npm run e2e`
 - `npm run check:theme`
 
 ## Coding Style & Naming Conventions

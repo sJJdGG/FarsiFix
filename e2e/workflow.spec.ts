@@ -75,7 +75,7 @@ test("processes fixture workbook and preserves XML/format invariants", async ({ 
   expect(sharedStrings).toContain("کریم یی کاف ک");
   expect(sharedStrings).toContain("1234567890 و 12345");
   expect(sharedStrings).toContain("می روم و سلام دنیا");
-  expect(sharedStrings).toContain("api v2 - نسخه 2");
+  expect(sharedStrings).toContain("API v2 - نسخه 2");
   expect(sharedStrings).toContain("فضای زیاد");
   expect(sharedStrings).not.toContain("ك");
   expect(sharedStrings).not.toContain("ي");
@@ -91,7 +91,7 @@ test("processes fixture workbook and preserves XML/format invariants", async ({ 
   // Inline strings must be normalized too, with entities preserved.
   expect(sheet2).toContain("سلام &amp; دنیا با ک و ی");
   expect(sheet2).toContain("می رویم");
-  expect(sheet2).toContain("r &amp; d &lt; q");
+  expect(sheet2).toContain("R &amp; D &lt; Q");
   expect(sheet2).not.toContain("سلام &amp; دنيا با ك و ي");
   expect(sheet2).not.toContain("\u200c");
 
