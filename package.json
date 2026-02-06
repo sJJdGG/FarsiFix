@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "check:theme": "node scripts/check-dark-variant.mjs",
-    "view": "node scripts/view.mjs"
+    "view": "node scripts/view.mjs",
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name farsifix --branch main"
   },
   "dependencies": {
     "comlink": "4.4.2",
