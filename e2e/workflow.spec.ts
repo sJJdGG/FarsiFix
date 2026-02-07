@@ -1,26 +1,34 @@
+import path from "node:path";
 import { expect, test } from "@playwright/test";
 import JSZip from "jszip";
 import { createTempWorkbook, readDownloadBuffer, resolveRepoPath } from "./helpers";
 
-const samplePath = resolveRepoPath("sample.xlsx");
 const fixturePath = resolveRepoPath("fixtures/farsifix-fixture.xlsx");
 
 test("uploads and downloads normalized excel", async ({ page }) => {
-  await page.goto("/");
+  const { path: inputPath, cleanup } = await createTempWorkbook("بالالاريجان");
 
-  const downloadPromise = page.waitForEvent("download");
-  await page.setInputFiles('[data-testid="file-input"]', samplePath);
-  const download = await downloadPromise;
+  try {
+    await page.goto("/");
 
-  await expect(download.suggestedFilename()).toBe("sample_FarsiFix.xlsx");
-  const buffer = await readDownloadBuffer(download);
-  const zip = await JSZip.loadAsync(buffer);
-  const sharedStrings = await zip.file("xl/sharedStrings.xml")?.async("string");
+    const downloadPromise = page.waitForEvent("download");
+    await page.setInputFiles('[data-testid="file-input"]', inputPath);
+    const download = await downloadPromise;
 
-  expect(sharedStrings).toBeDefined();
-  // Confirm normalized token exists and original Arabic-yeh variant is gone.
-  expect(sharedStrings).toContain("بالالاریجان");
-  expect(sharedStrings).not.toContain("بالالاريجان");
+    await expect(download.suggestedFilename()).toBe(
+      `${path.basename(inputPath, ".xlsx")}_FarsiFix.xlsx`,
+    );
+    const buffer = await readDownloadBuffer(download);
+    const zip = await JSZip.loadAsync(buffer);
+    const sharedStrings = await zip.file("xl/sharedStrings.xml")?.async("string");
+
+    expect(sharedStrings).toBeDefined();
+    // Confirm normalized token exists and original Arabic-yeh variant is gone.
+    expect(sharedStrings).toContain("بالالاریجان");
+    expect(sharedStrings).not.toContain("بالالاريجان");
+  } finally {
+    await cleanup();
+  }
 });
 
 test("preserves XML entities in sharedStrings and inline strings", async ({ page }) => {

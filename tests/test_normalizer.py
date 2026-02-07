@@ -1,6 +1,6 @@
 from persian_normalizer import normalize_fa
 
-# Real examples curated from sample.xlsx (kept small and representative).
+# Real examples curated from a private source workbook (kept small and representative).
 SAMPLE_EXAMPLES = {
     "بالالاريجان": "بالالاریجان",  # arabic_yeh
     "لاريجان": "لاریجان",  # arabic_yeh
