@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -25,8 +28,19 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Quality Gate
+        run: |
+          npm run lint:all
+          npm run build
+          npm run test
+          npm run e2e
+          npm run check:theme
+
       - name: Collect Head Metrics
-        run: npm run perf:metrics -- --out output/perf/after.json --raw-dir output/perf/raw-after
+        run: npm run perf:metrics -- --skip-build --out output/perf/after.json --raw-dir output/perf/raw-after
 
       - name: Collect Base Metrics
         if: github.event_name == 'pull_request'

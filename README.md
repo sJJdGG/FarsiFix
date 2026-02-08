@@ -143,7 +143,7 @@ Fail on regressions (useful in CI):
 npm run perf:compare -- --before output/perf/before.json --after output/perf/after.json --fail-on-regression
 ```
 
-GitHub Actions workflow is included at `.github/workflows/perf-regression.yml` and runs this flow on pull requests.
+GitHub Actions workflow is included at `.github/workflows/perf-regression.yml` and runs on pull requests, pushes to `main`, and manual dispatch. It also runs the full quality gate (`lint:all`, `build`, `test`, `e2e`, `check:theme`) before generating performance reports.
 
 ## Environment
 
