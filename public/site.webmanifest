@@ -1,0 +1,20 @@
+{
+  "name": "FarsiFix",
+  "short_name": "FarsiFix",
+  "description": "Normalize Persian text in Excel files for reliable search and filtering.",
+  "lang": "fa-IR",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#fafaf9",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

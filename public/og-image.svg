@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">FarsiFix - Persian text normalization for Excel</title>
+  <desc id="desc">A branded card for FarsiFix showing Persian and English product name and value proposition.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f5ea" />
+      <stop offset="55%" stop-color="#eef3ff" />
+      <stop offset="100%" stop-color="#dde9f0" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4a438" />
+      <stop offset="100%" stop-color="#168f8a" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1080" cy="-20" r="220" fill="#f2d98d" opacity="0.35" />
+  <circle cx="90" cy="620" r="180" fill="#5ec2bf" opacity="0.18" />
+  <rect x="72" y="72" width="1056" height="486" rx="28" fill="#ffffff" opacity="0.78" />
+  <rect x="72" y="72" width="1056" height="486" rx="28" fill="none" stroke="#d7dce8" />
+
+  <rect x="114" y="114" width="66" height="66" rx="16" fill="#1a1f2f" />
+  <text x="147" y="157" text-anchor="middle" font-family="Vazirmatn, Tahoma, sans-serif" font-size="36" fill="#f9c952">ف</text>
+
+  <text x="210" y="157" font-family="Vazirmatn, Tahoma, sans-serif" font-size="44" font-weight="800" fill="#151a27">فارسی‌فیکس</text>
+  <text x="210" y="200" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="26" font-weight="600" fill="#3a425a">FarsiFix</text>
+
+  <rect x="114" y="246" width="972" height="6" fill="url(#accent)" rx="3" />
+
+  <text x="114" y="326" font-family="Vazirmatn, Tahoma, sans-serif" font-size="42" font-weight="700" fill="#111827">
+    نرمال‌سازی متن فارسی در فایل‌های اکسل
+  </text>
+  <text x="114" y="378" font-family="Vazirmatn, Tahoma, sans-serif" font-size="28" fill="#334155">
+    جستجو و فیلتر دقیق‌تر، بدون تغییر فرمول و قالب‌بندی
+  </text>
+  <text x="114" y="458" font-family="IBM Plex Sans, Segoe UI, sans-serif" font-size="24" fill="#1f2937">
+    Client-side processing. No upload. Preserves workbook structure.
+  </text>
+</svg>

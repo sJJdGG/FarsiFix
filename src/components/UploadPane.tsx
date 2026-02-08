@@ -27,7 +27,10 @@ export default function UploadPane({
   onDownloadAgain,
 }: UploadPaneProps) {
   return (
-    <>
+    <section className="flex flex-col gap-8">
+      <h2 id="upload-pane-heading" className="sr-only">
+        آپلود و پردازش فایل اکسل
+      </h2>
       <FileDropZone
         onFileSelected={onFileSelected}
         disabled={busy}
@@ -42,6 +45,6 @@ export default function UploadPane({
         onDownloadAgain={onDownloadAgain}
       />
       {error ? <ErrorDisplay message={error} /> : null}
-    </>
+    </section>
   );
 }

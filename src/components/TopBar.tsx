@@ -3,9 +3,9 @@ import ThemeToggle from "./ThemeToggle";
 
 export default function TopBar() {
   return (
-    <nav className="flex items-center justify-between">
+    <nav className="flex items-center justify-between" aria-label="ناوبری اصلی">
       {/* Logo mark */}
-      <div className="flex items-center gap-3">
+      <a href="/" className="flex items-center gap-3" aria-label="صفحه اصلی فارسی‌فیکس">
         <div
           className="
           flex h-10 w-10 items-center justify-center rounded-xl 
@@ -15,10 +15,8 @@ export default function TopBar() {
         >
           <span className="text-lg font-black">ف</span>
         </div>
-        <span className="text-sm font-bold text-ink-900 dark:text-stone-200">
-          فارسی‌فیکس
-        </span>
-      </div>
+        <span className="text-sm font-bold text-ink-900 dark:text-stone-200">فارسی‌فیکس</span>
+      </a>
 
       {/* Right side actions */}
       <div className="flex items-center gap-3">
