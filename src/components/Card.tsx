@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 type CardVariant = "default" | "success" | "error" | "plain";
 
 const BASE_CLASSES =
-  "relative overflow-hidden rounded-2xl border p-5 shadow-card backdrop-blur-sm transition-all duration-500 dark:shadow-card-dark";
+  "relative overflow-hidden rounded-2xl border p-5 shadow-card backdrop-blur-none transition-all duration-500 dark:shadow-card-dark";
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
   default: "border-stone-200 bg-white/70 dark:border-ink-700 dark:bg-ink-900/50",

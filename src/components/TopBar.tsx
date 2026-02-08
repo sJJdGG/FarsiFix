@@ -27,7 +27,7 @@ export default function TopBar() {
           className="
             flex h-10 w-10 items-center justify-center rounded-xl 
             border border-stone-200 bg-white/80 text-stone-600
-            shadow-sm backdrop-blur-sm transition-all duration-300
+            shadow-sm backdrop-blur-none transition-all duration-300
             hover:-translate-y-0.5 hover:border-ink-300 hover:text-ink-900 hover:shadow-md
             focus-ring
             dark:border-ink-700 dark:bg-ink-800/80 dark:text-stone-400 

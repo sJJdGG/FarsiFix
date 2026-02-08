@@ -25,8 +25,8 @@
 - `npm run lint:all`: Run both Biome and Oxlint.
 - `npm run check:theme`: Validate built CSS uses class-based dark mode (no prefers-color-scheme).
 
-## Verification Policy (Mandatory)
-Use a two-stage verification flow to catch drift early and prevent regressions.
+## Verification Policy (Risk-Based Mandatory)
+Use a two-stage verification flow that scales with change risk. Do not run the full suite by default for trivial edits.
 
 ### 1) In-Task Checkpoints (Mandatory)
 Run targeted checks immediately after meaningful changes (do not wait until the end):
@@ -34,13 +34,26 @@ Run targeted checks immediately after meaningful changes (do not wait until the 
 - Run the relevant Playwright spec(s) after UI/download-flow/Excel-output changes.
 - If a checkpoint fails, fix first, then continue.
 
-### 2) Pre-Handoff Gate (Mandatory)
-Run these before handoff or commit for any change that can affect behavior, tests, worker logic, Excel/XML processing, or UI flows:
-- `npm run lint:all`
-- `npm run build`
-- `npm run test`
-- `npm run e2e`
-- `npm run check:theme`
+### 2) Pre-Handoff Gate (Mandatory, Smart Selection)
+Pick one gate level based on scope:
+
+- **Level A — Docs/text-only or non-runtime edits** (`README`, comments, copy-only content):
+  - No mandatory command gate.
+  - If unsure, run `npm run lint`.
+
+- **Level B — Scoped code changes with clear blast radius** (single component/hook/lib, no global behavior shift):
+  - `npm run lint:all`
+  - `npm run build`
+  - Plus targeted tests for touched behavior (`npm run test` and/or specific `npm run e2e` specs).
+
+- **Level C — High-risk or cross-cutting changes** (worker/contracts, Excel/XML processing, shared state flow, routing, global CSS/theme system, dependency/tooling upgrades, CI/perf scripts):
+  - `npm run lint:all`
+  - `npm run build`
+  - `npm run test`
+  - `npm run e2e`
+  - `npm run check:theme`
+
+When in doubt between levels, choose the higher level.
 
 ## Coding Style & Naming Conventions
 - TypeScript strict mode; prefer explicit types at boundaries (worker APIs, helpers).

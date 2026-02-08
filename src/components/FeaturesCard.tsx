@@ -9,7 +9,7 @@ interface FeaturesCardProps {
 export default function FeaturesCard({ maxFileSizeMb }: FeaturesCardProps) {
   return (
     <Card>
-      {/* Decorative gradient corner */}
+      {/* Decorative corner accent */}
       <div className="absolute -top-20 -left-20 h-40 w-40 rounded-full bg-gold-400/10 blur-3xl dark:bg-gold-500/5" />
 
       <h3 className="relative text-base font-bold text-ink-900 dark:text-stone-100">
@@ -17,7 +17,7 @@ export default function FeaturesCard({ maxFileSizeMb }: FeaturesCardProps) {
       </h3>
 
       <div className="relative mt-4 flex flex-col gap-3">
-        {FEATURES.map((feature, index) => {
+        {FEATURES.map((feature) => {
           const Icon = feature.icon;
           return (
             <div
@@ -29,7 +29,6 @@ export default function FeaturesCard({ maxFileSizeMb }: FeaturesCardProps) {
                 dark:border-ink-800 dark:bg-ink-800/30 
                 dark:hover:border-gold-800 dark:hover:bg-gold-900/20
               "
-              style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Icon container */}
               <span

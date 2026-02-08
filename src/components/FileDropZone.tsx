@@ -34,15 +34,15 @@ export default function FileDropZone({
       variant="plain"
       type="button"
       className={`
-        group relative flex min-h-[340px] flex-col items-center justify-center gap-5 
-        rounded-2xl p-8 text-center transition-all duration-500 ease-out-expo
+        group relative flex min-h-[300px] flex-col items-center justify-center gap-5 
+        rounded-2xl p-6 text-center transition-all duration-500 ease-out-expo sm:min-h-[340px] sm:p-8
         ${
           isDragging
             ? "border-2 border-gold-400 bg-gold-50/70 shadow-glow dark:border-gold-500 dark:bg-gold-900/20"
             : "border-2 border-dashed border-stone-300 bg-white/70 shadow-card hover:border-ink-300 hover:bg-white/80 dark:border-ink-700 dark:bg-ink-900/50 dark:shadow-card-dark dark:hover:border-ink-500 dark:hover:bg-ink-900/60"
         }
         ${disabled ? "pointer-events-none opacity-50" : "cursor-pointer"}
-        backdrop-blur-sm
+        backdrop-blur-none
       `}
       aria-busy={disabled}
       disabled={disabled}
@@ -61,7 +61,7 @@ export default function FileDropZone({
         style={{ borderBottomLeftRadius: "8px" }}
       />
 
-      {/* Upload icon with animation */}
+      {/* Upload icon */}
       <div
         className={`
         relative flex h-20 w-20 items-center justify-center rounded-2xl transition-all duration-500
@@ -75,9 +75,7 @@ export default function FileDropZone({
         <Upload
           className={`h-9 w-9 transition-transform duration-500 ${isDragging ? "-translate-y-1" : ""}`}
         />
-        {isDragging && (
-          <div className="absolute inset-0 animate-ping rounded-2xl bg-gold-400 opacity-30" />
-        )}
+        {isDragging && <div className="absolute inset-0 rounded-2xl bg-gold-400 opacity-30" />}
       </div>
 
       {/* Text content */}
@@ -101,7 +99,6 @@ export default function FileDropZone({
       >
         <FileSpreadsheet className="h-4 w-4" />
         انتخاب فایل اکسل
-        <span className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       </span>
 
       {/* File format indicator */}
@@ -131,7 +128,7 @@ export default function FileDropZone({
               <p className="text-xs text-turq-600 dark:text-turq-400">{activeFileSize}</p>
             )}
           </div>
-          <div className="h-2 w-2 animate-pulse rounded-full bg-turq-500" />
+          <div className="h-2 w-2 rounded-full bg-turq-500" />
         </div>
       )}
 

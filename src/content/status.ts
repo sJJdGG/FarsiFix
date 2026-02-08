@@ -5,6 +5,7 @@ export const PROCESSING_PHASES = ["parsing", "normalizing", "compressing", "done
 
 type BusyPhase = (typeof BUSY_PHASES)[number];
 export type ProcessingPhase = (typeof PROCESSING_PHASES)[number];
+export type PhaseTone = "idle" | "processing" | "done" | "error";
 
 type PhaseMeta = {
   label: string;
@@ -57,6 +58,15 @@ export const PHASE_META: Record<Phase, PhaseMeta> = {
 export const getPhaseLabel = (phase: Phase) => PHASE_META[phase].label;
 export const getPhaseBadgeLabel = (phase: Phase) => PHASE_META[phase].badge;
 export const isBusyPhase = (phase: Phase) => BUSY_PHASES.includes(phase as BusyPhase);
+export const getPhaseTone = (phase: Phase): PhaseTone => {
+  if (phase === "done") {
+    return "done";
+  }
+  if (phase === "error") {
+    return "error";
+  }
+  return isBusyPhase(phase) ? "processing" : "idle";
+};
 
 export const PROCESSING_STEPS: Array<{ id: ProcessingPhase; label: string }> =
   PROCESSING_PHASES.map((phase) => ({

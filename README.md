@@ -107,6 +107,8 @@ npm run build
 - `npm run test` - Run Vitest unit tests.
 - `npm run test:watch` - Run unit tests in watch mode.
 - `npm run e2e` - Run Playwright end-to-end tests.
+- `npm run perf:metrics` - Build + run Lighthouse (mobile/desktop) and save normalized metrics JSON/Markdown.
+- `npm run perf:compare` - Compare two metrics JSON files and produce a before/after Markdown report.
 - `npm run lint` - Run Biome checks.
 - `npm run lint:fix` - Apply Biome fixes.
 - `npm run lint:ox` - Run Oxlint (type-aware).
@@ -114,6 +116,34 @@ npm run build
 - `npm run check:theme` - Verify class-based dark mode in built CSS.
 - `npm run view` - Open a headed Playwright session against dev server.
 - `npm run deploy:pages` - Build and deploy to Cloudflare Pages.
+
+## Performance Metrics (Before/After)
+
+Collect a normalized performance snapshot (Lighthouse mobile + desktop):
+
+```bash
+npm run perf:metrics -- --out output/perf/before.json --raw-dir output/perf/raw-before
+```
+
+Run again after your changes:
+
+```bash
+npm run perf:metrics -- --out output/perf/after.json --raw-dir output/perf/raw-after
+```
+
+Generate the before/after report:
+
+```bash
+npm run perf:compare -- --before output/perf/before.json --after output/perf/after.json --out output/perf/report.md
+```
+
+Fail on regressions (useful in CI):
+
+```bash
+npm run perf:compare -- --before output/perf/before.json --after output/perf/after.json --fail-on-regression
+```
+
+GitHub Actions workflow is included at `.github/workflows/perf-regression.yml` and runs this flow on pull requests.
 
 ## Environment
 

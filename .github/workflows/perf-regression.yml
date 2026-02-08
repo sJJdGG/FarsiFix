@@ -1,0 +1,62 @@
+name: Performance Regression
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Collect Head Metrics
+        run: npm run perf:metrics -- --out output/perf/after.json --raw-dir output/perf/raw-after
+
+      - name: Collect Base Metrics
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          git worktree add ../farsifix-base "origin/${{ github.base_ref }}"
+          cd ../farsifix-base
+          npm ci
+          npm run perf:metrics -- --out output/perf/before.json --raw-dir output/perf/raw-before
+          cp output/perf/before.json "$GITHUB_WORKSPACE/output/perf/before.json"
+          cp -R output/perf/raw-before "$GITHUB_WORKSPACE/output/perf/raw-before"
+
+      - name: Compare Base vs Head
+        if: github.event_name == 'pull_request'
+        run: npm run perf:compare -- --before output/perf/before.json --after output/perf/after.json --out output/perf/report.md --fail-on-regression
+
+      - name: Publish Manual Report
+        if: github.event_name != 'pull_request'
+        run: cat output/perf/after.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish PR Report
+        if: github.event_name == 'pull_request' && always()
+        run: |
+          if [ -f output/perf/report.md ]; then
+            cat output/perf/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload Perf Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-report
+          path: output/perf

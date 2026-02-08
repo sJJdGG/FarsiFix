@@ -26,7 +26,7 @@ export default function ThemeToggle() {
       className="
         group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full 
         border border-stone-200 bg-white/80 px-4 py-2 text-sm font-medium 
-        text-ink-700 shadow-sm backdrop-blur-sm transition-all duration-300
+        text-ink-700 shadow-sm backdrop-blur-none transition-all duration-300
         hover:-translate-y-0.5 hover:border-gold-300 hover:shadow-md
         focus-ring
         dark:border-ink-700 dark:bg-ink-800/80 dark:text-stone-300 
@@ -49,8 +49,8 @@ export default function ThemeToggle() {
       {/* Hover highlight */}
       <span
         className="
-        absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-gold-400/10 to-transparent
-        transition-transform duration-500 group-hover:translate-x-full
+        absolute inset-0 hidden -translate-x-full bg-gradient-to-r from-transparent via-gold-400/10 to-transparent
+        transition-transform duration-500 group-hover:translate-x-full sm:block
       "
       />
     </button>

@@ -15,6 +15,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "perf:metrics": "node scripts/perf-metrics.mjs",
+    "perf:compare": "node scripts/perf-compare.mjs",
     "check:theme": "node scripts/check-dark-variant.mjs",
     "view": "node scripts/view.mjs",
     "deploy:pages": "npm run build && wrangler pages deploy dist --project-name farsifix --branch main"

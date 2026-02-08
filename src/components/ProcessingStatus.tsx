@@ -1,5 +1,10 @@
 import { Check, Circle, Loader2 } from "lucide-react";
-import { getPhaseBadgeLabel, PROCESSING_PHASES, PROCESSING_STEPS } from "../content/status";
+import {
+  getPhaseBadgeLabel,
+  getPhaseTone,
+  PROCESSING_PHASES,
+  PROCESSING_STEPS,
+} from "../content/status";
 import type { Phase } from "../lib/uiTypes";
 import Card from "./Card";
 
@@ -13,8 +18,14 @@ export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
       ? -1
       : PROCESSING_PHASES.indexOf(phase as (typeof PROCESSING_PHASES)[number]);
 
-  const isDone = phase === "done";
-  const isError = phase === "error";
+  const phaseTone = getPhaseTone(phase);
+
+  const badgeClassByTone = {
+    done: "bg-turq-100 text-turq-700 dark:bg-turq-900/50 dark:text-turq-300",
+    error: "bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300",
+    processing: "bg-gold-100 text-gold-700 dark:bg-gold-900/50 dark:text-gold-300",
+    idle: "bg-stone-100 text-stone-600 dark:bg-ink-800 dark:text-stone-400",
+  } as const;
 
   return (
     <Card>
@@ -24,15 +35,7 @@ export default function ProcessingStatus({ phase }: ProcessingStatusProps) {
         <span
           className={`
             rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300
-            ${
-              isDone
-                ? "bg-turq-100 text-turq-700 dark:bg-turq-900/50 dark:text-turq-300"
-                : isError
-                  ? "bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300"
-                  : activeIndex >= 0
-                    ? "bg-gold-100 text-gold-700 dark:bg-gold-900/50 dark:text-gold-300"
-                    : "bg-stone-100 text-stone-600 dark:bg-ink-800 dark:text-stone-400"
-            }
+            ${badgeClassByTone[phaseTone]}
           `}
         >
           {getPhaseBadgeLabel(phase)}
