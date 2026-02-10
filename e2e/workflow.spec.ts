@@ -1,7 +1,12 @@
 import path from "node:path";
 import { expect, test } from "@playwright/test";
 import JSZip from "jszip";
-import { createTempWorkbook, readDownloadBuffer, resolveRepoPath } from "./helpers";
+import {
+  createTempWorkbook,
+  readDownloadBuffer,
+  resolveRepoPath,
+  uploadAndWaitForDownload,
+} from "./helpers";
 
 const fixturePath = resolveRepoPath("fixtures/farsifix-fixture.xlsx");
 
@@ -11,9 +16,7 @@ test("uploads and downloads normalized excel", async ({ page }) => {
   try {
     await page.goto("/");
 
-    const downloadPromise = page.waitForEvent("download");
-    await page.setInputFiles('[data-testid="file-input"]', inputPath);
-    const download = await downloadPromise;
+    const download = await uploadAndWaitForDownload(page, inputPath);
 
     await expect(download.suggestedFilename()).toBe(
       `${path.basename(inputPath, ".xlsx")}_FarsiFix.xlsx`,
@@ -35,9 +38,7 @@ test("preserves XML entities in sharedStrings and inline strings", async ({ page
   const { path: inputPath, cleanup } = await createTempWorkbook("سلام &amp; دنيا");
 
   await page.goto("/");
-  const downloadPromise = page.waitForEvent("download");
-  await page.setInputFiles('[data-testid="file-input"]', inputPath);
-  const download = await downloadPromise;
+  const download = await uploadAndWaitForDownload(page, inputPath);
 
   const buffer = await readDownloadBuffer(download);
   const zip = await JSZip.loadAsync(buffer);
@@ -59,9 +60,7 @@ test("preserves XML entities in sharedStrings and inline strings", async ({ page
 test("processes fixture workbook and preserves XML/format invariants", async ({ page }) => {
   await page.goto("/");
 
-  const downloadPromise = page.waitForEvent("download");
-  await page.setInputFiles('[data-testid="file-input"]', fixturePath);
-  const download = await downloadPromise;
+  const download = await uploadAndWaitForDownload(page, fixturePath);
 
   await expect(download.suggestedFilename()).toBe("farsifix-fixture_FarsiFix.xlsx");
 

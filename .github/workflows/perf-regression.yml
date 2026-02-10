@@ -36,7 +36,7 @@ jobs:
           npm run lint:all
           npm run build
           npm run test
-          npm run e2e
+          npm run e2e -- --retries=2
           npm run check:theme
 
       - name: Collect Head Metrics

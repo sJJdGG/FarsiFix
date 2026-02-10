@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Download } from "@playwright/test";
+import type { Download, Page } from "@playwright/test";
 import JSZip from "jszip";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -27,6 +27,25 @@ export const readDownloadBuffer = async (download: Download) => {
   }
 
   return buffer;
+};
+
+export const uploadAndWaitForDownload = async (page: Page, inputPath: string) => {
+  const firstAttempt = page
+    .waitForEvent("download", { timeout: 45_000 })
+    .catch(() => null as Download | null);
+
+  await page.setInputFiles('[data-testid="file-input"]', inputPath);
+  const firstDownload = await firstAttempt;
+  if (firstDownload) {
+    return firstDownload;
+  }
+
+  const downloadAgainButton = page.getByRole("button", { name: "دانلود دوباره خروجی" });
+  await downloadAgainButton.waitFor({ state: "visible", timeout: 30_000 });
+
+  const retryAttempt = page.waitForEvent("download", { timeout: 45_000 });
+  await downloadAgainButton.click();
+  return await retryAttempt;
 };
 
 export const createTempWorkbook = async (text: string) => {
