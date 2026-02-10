@@ -117,6 +117,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Build
+        run: npm run build
+
       - name: Theme Check
         run: npm run check:theme
 
