@@ -210,9 +210,11 @@ function parseArgs(argv) {
 }
 
 function startPreviewServer(host, port, cwd) {
-  const child = spawn("npx", ["vite", "preview", "--host", host, "--port", port], {
+  const viteBin = path.resolve(cwd, "node_modules", "vite", "bin", "vite.js");
+  const child = spawn(process.execPath, [viteBin, "preview", "--host", host, "--port", port], {
     cwd,
     env: process.env,
+    detached: process.platform !== "win32",
     stdio: ["ignore", "pipe", "pipe"],
   });
 
@@ -232,8 +234,10 @@ async function waitForUrl(targetUrl, timeoutMs) {
     try {
       const response = await fetch(targetUrl, { method: "GET" });
       if (response.ok) {
+        await response.arrayBuffer();
         return;
       }
+      await response.body?.cancel();
     } catch {
       // Ignore connection errors while server is starting.
     }
@@ -268,16 +272,36 @@ async function stopProcess(child) {
 
   const exited = new Promise((resolve) => {
     child.once("exit", () => resolve());
+    child.once("error", () => resolve());
   });
 
-  child.kill("SIGTERM");
-  const timeout = sleep(5_000).then(() => {
-    if (child.exitCode === null) {
-      child.kill("SIGKILL");
+  terminateProcess(child, "SIGTERM");
+  const terminated = await Promise.race([exited.then(() => true), sleep(3_000).then(() => false)]);
+
+  if (!terminated && child.exitCode === null) {
+    terminateProcess(child, "SIGKILL");
+    await Promise.race([exited, sleep(2_000)]);
+  }
+
+  child.stdout?.destroy();
+  child.stderr?.destroy();
+}
+
+function terminateProcess(child, signal) {
+  if (child.exitCode !== null) {
+    return;
+  }
+
+  if (process.platform !== "win32" && typeof child.pid === "number") {
+    try {
+      process.kill(-child.pid, signal);
+      return;
+    } catch {
+      // Fall back to direct child signaling.
     }
-  });
+  }
 
-  await Promise.race([exited, timeout]);
+  child.kill(signal);
 }
 
 function toRelative(targetPath) {
