@@ -30,23 +30,35 @@ export const readDownloadBuffer = async (download: Download) => {
 };
 
 export const uploadAndWaitForDownload = async (page: Page, inputPath: string) => {
-  const firstAttempt = page
-    .waitForEvent("download", { timeout: 45_000 })
-    .catch(() => null as Download | null);
+  const firstAttempt = page.waitForEvent("download", { timeout: 45_000 });
 
   await page.setInputFiles('[data-testid="file-input"]', inputPath);
-  const firstDownload = await firstAttempt;
-  if (firstDownload) {
+
+  try {
+    const firstDownload = await firstAttempt;
     return firstDownload;
+  } catch (error) {
+    if (!isTimeoutError(error)) {
+      throw error;
+    }
   }
 
-  const downloadAgainButton = page.getByRole("button", { name: "دانلود دوباره خروجی" });
+  const downloadAgainButton = page.getByTestId("download-again");
   await downloadAgainButton.waitFor({ state: "visible", timeout: 30_000 });
 
   const retryAttempt = page.waitForEvent("download", { timeout: 45_000 });
   await downloadAgainButton.click();
   return await retryAttempt;
 };
+
+function isTimeoutError(error: unknown): boolean {
+  return Boolean(
+    error &&
+      typeof error === "object" &&
+      "name" in error &&
+      (error as { name?: string }).name === "TimeoutError",
+  );
+}
 
 export const createTempWorkbook = async (text: string) => {
   const zip = new JSZip();

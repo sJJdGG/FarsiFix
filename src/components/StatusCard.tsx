@@ -121,6 +121,7 @@ export default function StatusCard({
           {hasDownload && (
             <button
               type="button"
+              data-testid="download-again"
               onClick={onDownloadAgain}
               className="
                 inline-flex items-center gap-2 rounded-full bg-turq-600 
