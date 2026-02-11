@@ -29,6 +29,7 @@ const initialState: FarsiFixState = {
 };
 
 const farsifixReducer = (state: FarsiFixState, action: FarsiFixAction): FarsiFixState => {
+  // Centralized transitions keep phase/error/download state consistent across async branches.
   if (action.type === "fileSelected") {
     return {
       ...state,
@@ -114,6 +115,7 @@ export const useFarsiFix = () => {
         dispatch({ type: "setPhase", phase: "parsing" });
         const buffer = await file.arrayBuffer();
         const result = await processBuffer(buffer, (nextPhase) =>
+          // Worker progress is mapped 1:1 into reducer state updates.
           dispatch({ type: "setPhase", phase: nextPhase }),
         );
         if (!result.ok) {

@@ -18,6 +18,7 @@ export const useExcelWorker = () => {
       return workerRef.current;
     }
 
+    // Lazy init guarantees upload can proceed even if the mount effect has not run yet.
     const worker = new Worker(new URL("../workers/excel.worker.ts", import.meta.url), {
       type: "module",
     });
@@ -28,6 +29,7 @@ export const useExcelWorker = () => {
   }, []);
 
   useEffect(() => {
+    // Prewarm to reduce first-upload latency while still keeping lazy safety in processBuffer.
     getOrCreateWorker();
     return () => {
       workerTargetRef.current?.terminate();

@@ -37,6 +37,7 @@ export const readDownloadBuffer = async (download: Download) => {
 
 export const uploadAndWaitForDownload = async (page: Page, inputPath: string) => {
   await waitForAppReady(page);
+  // Prefer the auto-download path first to match real user flow.
   const firstAttempt = page.waitForEvent("download", { timeout: E2E_TIMEOUTS.firstDownloadMs });
 
   await page.setInputFiles('[data-testid="file-input"]', inputPath);
@@ -53,6 +54,7 @@ export const uploadAndWaitForDownload = async (page: Page, inputPath: string) =>
   const downloadAgainButton = page.getByTestId("download-again");
   const errorMessage = page.getByTestId("error-message");
 
+  // If the app reached an explicit error state, surface that immediately instead of timing out.
   if (await isVisible(errorMessage)) {
     const message = (await errorMessage.textContent())?.trim() ?? "unknown error";
     throw new Error(`Upload did not produce a downloadable file: ${message}`);
@@ -80,6 +82,7 @@ export const uploadAndWaitForDownload = async (page: Page, inputPath: string) =>
 };
 
 async function waitForAppReady(page: Page) {
+  // App readiness is tied to worker initialization; uploads before this point can be flaky.
   await page
     .getByTestId("app-ready")
     .waitFor({ state: "attached", timeout: E2E_TIMEOUTS.appReadyMs });

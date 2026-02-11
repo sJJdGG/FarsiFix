@@ -3,6 +3,7 @@ dist/
 playwright-report/
 test-results/
 output/playwright/
+output/
 .playwright-cli/
 *.tsbuildinfo
 vite.config.js
