@@ -3,38 +3,44 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   type ExcelWorker,
   toWorkerErrorPayload,
-  UNKNOWN_ERROR_CODE,
   type WorkerPhase,
   type WorkerResult,
 } from "../lib/workerContracts";
 
 export const useExcelWorker = () => {
   const workerRef = useRef<Comlink.Remote<ExcelWorker> | null>(null);
+  const workerTargetRef = useRef<Worker | null>(null);
   const jobIdRef = useRef<string | null>(null);
 
-  useEffect(() => {
+  const getOrCreateWorker = useCallback(() => {
+    if (workerRef.current) {
+      return workerRef.current;
+    }
+
     const worker = new Worker(new URL("../workers/excel.worker.ts", import.meta.url), {
       type: "module",
     });
+    workerTargetRef.current = worker;
     workerRef.current = Comlink.wrap<ExcelWorker>(worker);
-
-    return () => {
-      worker.terminate();
-    };
+    return workerRef.current;
   }, []);
+
+  useEffect(() => {
+    getOrCreateWorker();
+    return () => {
+      workerTargetRef.current?.terminate();
+      workerTargetRef.current = null;
+      workerRef.current = null;
+      jobIdRef.current = null;
+    };
+  }, [getOrCreateWorker]);
 
   const processBuffer = useCallback(
     async (
       buffer: ArrayBuffer,
       onProgress?: (phase: WorkerPhase) => void,
     ): Promise<WorkerResult> => {
-      const worker = workerRef.current;
-      if (!worker) {
-        return {
-          ok: false,
-          error: { code: UNKNOWN_ERROR_CODE, message: "Worker not ready." },
-        };
-      }
+      const worker = getOrCreateWorker();
 
       const jobId = crypto.randomUUID();
       jobIdRef.current = jobId;
@@ -50,7 +56,7 @@ export const useExcelWorker = () => {
         jobIdRef.current = null;
       }
     },
-    [],
+    [getOrCreateWorker],
   );
 
   const cancel = useCallback(() => {

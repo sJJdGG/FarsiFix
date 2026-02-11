@@ -26,7 +26,10 @@ export default function ErrorDisplay({ message, onDismiss }: ErrorDisplayProps) 
         {/* Content */}
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-bold text-rose-800 dark:text-rose-200">مشکلی پیش آمد</h4>
-          <p className="mt-1.5 text-sm leading-relaxed text-rose-700 dark:text-rose-300">
+          <p
+            data-testid="error-message"
+            className="mt-1.5 text-sm leading-relaxed text-rose-700 dark:text-rose-300"
+          >
             {message}
           </p>
         </div>

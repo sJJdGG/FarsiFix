@@ -30,7 +30,7 @@ export const readDownloadBuffer = async (download: Download) => {
 };
 
 export const uploadAndWaitForDownload = async (page: Page, inputPath: string) => {
-  const firstAttempt = page.waitForEvent("download", { timeout: 45_000 });
+  const firstAttempt = page.waitForEvent("download", { timeout: 30_000 });
 
   await page.setInputFiles('[data-testid="file-input"]', inputPath);
 
@@ -44,12 +44,38 @@ export const uploadAndWaitForDownload = async (page: Page, inputPath: string) =>
   }
 
   const downloadAgainButton = page.getByTestId("download-again");
-  await downloadAgainButton.waitFor({ state: "visible", timeout: 30_000 });
+  const errorMessage = page.getByTestId("error-message");
 
-  const retryAttempt = page.waitForEvent("download", { timeout: 45_000 });
+  if (await isVisible(errorMessage)) {
+    const message = (await errorMessage.textContent())?.trim() ?? "unknown error";
+    throw new Error(`Upload did not produce a downloadable file: ${message}`);
+  }
+
+  try {
+    await downloadAgainButton.waitFor({ state: "visible", timeout: 20_000 });
+  } catch (error) {
+    if (!isTimeoutError(error)) {
+      throw error;
+    }
+    if (await isVisible(errorMessage)) {
+      const message = (await errorMessage.textContent())?.trim() ?? "unknown error";
+      throw new Error(`Upload did not produce a downloadable file: ${message}`);
+    }
+    throw new Error("Upload did not produce a download or retry action within expected time.");
+  }
+
+  const retryAttempt = page.waitForEvent("download", { timeout: 20_000 });
   await downloadAgainButton.click();
   return await retryAttempt;
 };
+
+async function isVisible(locator: ReturnType<Page["getByTestId"]>) {
+  try {
+    return await locator.isVisible();
+  } catch {
+    return false;
+  }
+}
 
 function isTimeoutError(error: unknown): boolean {
   return Boolean(
