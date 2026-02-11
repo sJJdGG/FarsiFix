@@ -2,11 +2,15 @@ import type { ReactNode } from "react";
 
 interface AppShellProps {
   children: ReactNode;
+  ready?: boolean;
 }
 
-export default function AppShell({ children }: AppShellProps) {
+export default function AppShell({ children, ready = false }: AppShellProps) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-stone-50 text-ink-900 dark:bg-ink-950 dark:text-stone-100">
+    <div
+      data-testid={ready ? "app-ready" : undefined}
+      className="relative min-h-screen overflow-hidden bg-stone-50 text-ink-900 dark:bg-ink-950 dark:text-stone-100"
+    >
       {/* Layered gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-hero-gradient dark:bg-hero-gradient-dark" />
 

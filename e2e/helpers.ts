@@ -7,6 +7,12 @@ import JSZip from "jszip";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
+const E2E_TIMEOUTS = {
+  appReadyMs: 20_000,
+  firstDownloadMs: 25_000,
+  downloadAgainVisibleMs: 10_000,
+  retryDownloadMs: 20_000,
+};
 
 export const resolveRepoPath = (...segments: string[]) => path.resolve(repoRoot, ...segments);
 
@@ -30,7 +36,8 @@ export const readDownloadBuffer = async (download: Download) => {
 };
 
 export const uploadAndWaitForDownload = async (page: Page, inputPath: string) => {
-  const firstAttempt = page.waitForEvent("download", { timeout: 30_000 });
+  await waitForAppReady(page);
+  const firstAttempt = page.waitForEvent("download", { timeout: E2E_TIMEOUTS.firstDownloadMs });
 
   await page.setInputFiles('[data-testid="file-input"]', inputPath);
 
@@ -52,7 +59,10 @@ export const uploadAndWaitForDownload = async (page: Page, inputPath: string) =>
   }
 
   try {
-    await downloadAgainButton.waitFor({ state: "visible", timeout: 20_000 });
+    await downloadAgainButton.waitFor({
+      state: "visible",
+      timeout: E2E_TIMEOUTS.downloadAgainVisibleMs,
+    });
   } catch (error) {
     if (!isTimeoutError(error)) {
       throw error;
@@ -64,10 +74,16 @@ export const uploadAndWaitForDownload = async (page: Page, inputPath: string) =>
     throw new Error("Upload did not produce a download or retry action within expected time.");
   }
 
-  const retryAttempt = page.waitForEvent("download", { timeout: 20_000 });
+  const retryAttempt = page.waitForEvent("download", { timeout: E2E_TIMEOUTS.retryDownloadMs });
   await downloadAgainButton.click();
   return await retryAttempt;
 };
+
+async function waitForAppReady(page: Page) {
+  await page
+    .getByTestId("app-ready")
+    .waitFor({ state: "attached", timeout: E2E_TIMEOUTS.appReadyMs });
+}
 
 async function isVisible(locator: ReturnType<Page["getByTestId"]>) {
   try {

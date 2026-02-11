@@ -14,6 +14,7 @@ export default function App() {
     activeFile,
     activeFileSize,
     downloadInfo,
+    workerReady,
     maxFileSizeMb,
     handleFileSelected,
     handleCancel,
@@ -21,7 +22,7 @@ export default function App() {
   } = useFarsiFix();
 
   return (
-    <AppShell>
+    <AppShell ready={workerReady}>
       <TopBar />
       <HeroHeader />
       <ContentGrid

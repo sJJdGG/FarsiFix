@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { isBusyPhase } from "../content/status";
 import { triggerDownload } from "../lib/downloadUtils";
 import { mapUnknownErrorMessage, mapWorkerErrorMessage } from "../lib/errorMessages";
@@ -8,31 +8,78 @@ import { validateExcelFile } from "../lib/validateExcel";
 import { useExcelWorker } from "./useExcelWorker";
 
 type DownloadInfo = { url: string; name: string };
+type FarsiFixState = {
+  phase: Phase;
+  error: string | null;
+  activeFile: File | null;
+  downloadInfo: DownloadInfo | null;
+};
+
+type FarsiFixAction =
+  | { type: "fileSelected"; file: File }
+  | { type: "setPhase"; phase: Phase }
+  | { type: "setError"; message: string }
+  | { type: "setDownload"; payload: DownloadInfo };
+
+const initialState: FarsiFixState = {
+  phase: "idle",
+  error: null,
+  activeFile: null,
+  downloadInfo: null,
+};
+
+const farsifixReducer = (state: FarsiFixState, action: FarsiFixAction): FarsiFixState => {
+  if (action.type === "fileSelected") {
+    return {
+      ...state,
+      phase: "idle",
+      error: null,
+      activeFile: action.file,
+      downloadInfo: null,
+    };
+  }
+
+  if (action.type === "setPhase") {
+    return { ...state, phase: action.phase };
+  }
+
+  if (action.type === "setError") {
+    return { ...state, phase: "error", error: action.message };
+  }
+
+  if (action.type === "setDownload") {
+    return {
+      ...state,
+      phase: "done",
+      error: null,
+      downloadInfo: action.payload,
+    };
+  }
+
+  return state;
+};
 
 export const useFarsiFix = () => {
-  const { processBuffer, cancel } = useExcelWorker();
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [error, setError] = useState<string | null>(null);
-  const [activeFile, setActiveFile] = useState<File | null>(null);
-  const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
+  const { processBuffer, cancel, ready } = useExcelWorker();
+  const [state, dispatch] = useReducer(farsifixReducer, initialState);
 
   const maxFileSizeMbRaw = Number.parseFloat(import.meta.env.VITE_MAX_FILE_SIZE_MB ?? "100");
   const maxFileSizeMb = Number.isFinite(maxFileSizeMbRaw) ? maxFileSizeMbRaw : 100;
   const maxFileSizeBytes = maxFileSizeMb * 1024 * 1024;
 
-  const busy = useMemo(() => isBusyPhase(phase), [phase]);
+  const busy = useMemo(() => isBusyPhase(state.phase), [state.phase]);
   const activeFileSize = useMemo(
-    () => (activeFile ? formatBytes(activeFile.size) : undefined),
-    [activeFile],
+    () => (state.activeFile ? formatBytes(state.activeFile.size) : undefined),
+    [state.activeFile],
   );
 
   useEffect(() => {
     return () => {
-      if (downloadInfo) {
-        URL.revokeObjectURL(downloadInfo.url);
+      if (state.downloadInfo) {
+        URL.revokeObjectURL(state.downloadInfo.url);
       }
     };
-  }, [downloadInfo]);
+  }, [state.downloadInfo]);
 
   const handleDownload = useCallback((data: ArrayBuffer, originalName: string) => {
     const blob = new Blob([data], {
@@ -41,7 +88,7 @@ export const useFarsiFix = () => {
     const url = URL.createObjectURL(blob);
     const name = getDownloadName(originalName);
 
-    setDownloadInfo({ url, name });
+    dispatch({ type: "setDownload", payload: { url, name } });
     triggerDownload(url, name);
   }, []);
 
@@ -51,35 +98,31 @@ export const useFarsiFix = () => {
         return;
       }
 
-      setError(null);
-      setActiveFile(file);
-      setDownloadInfo(null);
+      dispatch({ type: "fileSelected", file });
 
       const validation = validateExcelFile(file, maxFileSizeBytes);
       if (!validation.ok) {
-        setPhase("error");
         if (validation.reason === "invalidType") {
-          setError("لطفاً یک فایل اکسل با پسوند .xlsx انتخاب کنید.");
+          dispatch({ type: "setError", message: "لطفاً یک فایل اکسل با پسوند .xlsx انتخاب کنید." });
         } else {
-          setError(`حجم فایل بیش از ${maxFileSizeMb} مگابایت است.`);
+          dispatch({ type: "setError", message: `حجم فایل بیش از ${maxFileSizeMb} مگابایت است.` });
         }
         return;
       }
 
       try {
-        setPhase("parsing");
+        dispatch({ type: "setPhase", phase: "parsing" });
         const buffer = await file.arrayBuffer();
-        const result = await processBuffer(buffer, (nextPhase) => setPhase(nextPhase));
+        const result = await processBuffer(buffer, (nextPhase) =>
+          dispatch({ type: "setPhase", phase: nextPhase }),
+        );
         if (!result.ok) {
-          setPhase("error");
-          setError(mapWorkerErrorMessage(result.error));
+          dispatch({ type: "setError", message: mapWorkerErrorMessage(result.error) });
           return;
         }
-        setPhase("done");
         handleDownload(result.data, file.name);
       } catch (err) {
-        setPhase("error");
-        setError(mapUnknownErrorMessage(err));
+        dispatch({ type: "setError", message: mapUnknownErrorMessage(err) });
         console.error(err);
       }
     },
@@ -87,19 +130,20 @@ export const useFarsiFix = () => {
   );
 
   const handleDownloadAgain = useCallback(() => {
-    if (!downloadInfo) {
+    if (!state.downloadInfo) {
       return;
     }
-    triggerDownload(downloadInfo.url, downloadInfo.name);
-  }, [downloadInfo]);
+    triggerDownload(state.downloadInfo.url, state.downloadInfo.name);
+  }, [state.downloadInfo]);
 
   return {
-    phase,
+    phase: state.phase,
     busy,
-    error,
-    activeFile,
+    error: state.error,
+    activeFile: state.activeFile,
     activeFileSize,
-    downloadInfo,
+    downloadInfo: state.downloadInfo,
+    workerReady: ready,
     maxFileSizeMb,
     handleFileSelected,
     handleCancel: cancel,

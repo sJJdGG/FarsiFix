@@ -1,5 +1,5 @@
 import * as Comlink from "comlink";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   type ExcelWorker,
   toWorkerErrorPayload,
@@ -11,6 +11,7 @@ export const useExcelWorker = () => {
   const workerRef = useRef<Comlink.Remote<ExcelWorker> | null>(null);
   const workerTargetRef = useRef<Worker | null>(null);
   const jobIdRef = useRef<string | null>(null);
+  const [ready, setReady] = useState(false);
 
   const getOrCreateWorker = useCallback(() => {
     if (workerRef.current) {
@@ -22,6 +23,7 @@ export const useExcelWorker = () => {
     });
     workerTargetRef.current = worker;
     workerRef.current = Comlink.wrap<ExcelWorker>(worker);
+    setReady(true);
     return workerRef.current;
   }, []);
 
@@ -32,6 +34,7 @@ export const useExcelWorker = () => {
       workerTargetRef.current = null;
       workerRef.current = null;
       jobIdRef.current = null;
+      setReady(false);
     };
   }, [getOrCreateWorker]);
 
@@ -67,5 +70,5 @@ export const useExcelWorker = () => {
     }
   }, []);
 
-  return { processBuffer, cancel };
+  return { processBuffer, cancel, ready };
 };

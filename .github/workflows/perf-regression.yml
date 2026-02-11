@@ -22,14 +22,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Project
+        uses: ./.github/actions/setup-node-npm-ci
         with:
           node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
 
       - name: Lint
         run: npm run lint:all
@@ -45,17 +41,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Project
+        uses: ./.github/actions/setup-node-npm-ci
         with:
           node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
 
       - name: Build
         run: npm run build
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-build
+          path: dist
 
   unit_tests:
     name: Unit Tests
@@ -65,14 +63,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Project
+        uses: ./.github/actions/setup-node-npm-ci
         with:
           node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
 
       - name: Unit Tests
         run: npm run test
@@ -85,14 +79,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Project
+        uses: ./.github/actions/setup-node-npm-ci
         with:
           node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
 
       - name: Install Playwright Browser
         run: npx playwright install --with-deps chromium
@@ -103,22 +93,22 @@ jobs:
   theme_check:
     name: Theme Check
     runs-on: ubuntu-latest
+    needs: [build]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Project
+        uses: ./.github/actions/setup-node-npm-ci
         with:
           node-version: 22
-          cache: npm
 
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-build
+          path: dist
 
       - name: Theme Check
         run: npm run check:theme
@@ -134,17 +124,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Project
+        uses: ./.github/actions/setup-node-npm-ci
         with:
           node-version: 22
-          cache: npm
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-build
+          path: dist
 
       - name: Collect Head Metrics
-        run: npm run perf:metrics -- --out output/perf/after.json --raw-dir output/perf/raw-after
+        run: npm run perf:metrics -- --skip-build --out output/perf/after.json --raw-dir output/perf/raw-after
 
       - name: Collect Base Metrics
         if: github.event_name == 'pull_request'
